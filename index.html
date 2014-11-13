@@ -3,8 +3,10 @@
 <head>
 	<meta charset="UTF-8">
 	<title>NimbusFoundry</title>
-	<link href="dist/css/default.css" rel="stylesheet" />
-	<script src="dist/main.js"></script>
+	<link href="https://cdn.rawgit.com/NimbusFoundry/source/master/css/default.css" rel="stylesheet" />
+	<!-- <script src="assets/js/all.js"></script> -->
+	<!-- <script src="assets/js/foundry.js"></script> -->
+	<script src="https://rawgit.com/NimbusFoundry/source/master/main.js"></script>
 	<script src="app/app.js"></script>
 </head>
 <body>
@@ -24,13 +26,13 @@
 		<li class="brand">
 			<img id="logo" src="assets/img/foundry_logo.png" />
 			<a id="user" data-toggle="dropdown"> 
-				<img id="user_pic" src="photo.jpg" />
+				<img id="user_pic" src="assets/img/photo.jpg" />
 				<i class="icon-angle-down" style="font-size: 15px;"></i> 
 			</a>
 			<ul class="dropdown-menu" style="width: 186px; margin-left: 20px; top: 45px; background-color: #fff;">
 				<li>
 					<div class="identity_div">
-						<img id="user_pic_large" src="photo.jpg" style="height: 50px;"/>
+						<img id="user_pic_large" src="assets/img/photo.jpg" style="height: 50px;"/>
 						<p>
 							<strong>{{ _current_global_user.name }}</strong>
 							<br />
@@ -43,8 +45,15 @@
 			</ul>
 		</li>
 		<!--  -->
-		<li ng-hide="_plugin.hide_plugin" ng-repeat="_plugin in _plugins | orderBy:'order':true" ng-class="{active:'#'+_active_app_path==_plugin.anchor}">
-			<a href="{{_plugin.anchor}}"><span><i class="{{_plugin.icon}}" ></i>{{_plugin.title}}</span></a>
+		<li ng-hide="_plugin.hide_plugin" ng-repeat="(name, _plugin) in _plugins | orderBy:'order':true" ng-class="{active:'#'+_active_app_path=='#/'+name}">
+			<a href="#/{{name}}">
+				<span ng-if="_plugin.title">
+					{{_plugin.title}}<i class="{{_plugin.icon}}" ></i>
+				</span>
+				<span ng-if="!_plugin.title" >
+					{{name|uppercase}}<i class="{{_plugin.icon}}" ></i>
+				</span>
+			</a>
 		</li>
 
 		<li>
