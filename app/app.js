@@ -14,7 +14,8 @@
     config.plugins = {
       user: 'core/plugins/user',
       workspace: 'core/plugins/workspace',
-      demo : 'app/plugins/demo'
+      document: 'core/plugins/document',
+      cars : 'app/plugins/cars'
     };
     return config;
   });
@@ -23,11 +24,11 @@
 
   Nimbus.Auth.setup({
     'GDrive': {
-      'app_id' : '696230129324',
-      'key': '696230129324-k4g89ugcu02k5obu9hs1u5tp3e54n02u.apps.googleusercontent.com',
+      'app_id' : '176681637100',
+      'key': '176681637100-139utdaqo9ajoiudphscok1a9krsbc0c.apps.googleusercontent.com',
       "scope": "openid https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/plus.me"
     },
-    "app_name": "Foundry",
+    "app_name": "Cars Management",
     'synchronous': false
   });
 
