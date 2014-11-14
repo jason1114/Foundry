@@ -15,7 +15,7 @@
       user: 'core/plugins/user',
       workspace: 'core/plugins/workspace',
       document: 'core/plugins/document',
-      cars : 'app/plugins/cars'
+      model_editor : 'app/plugins/model_editor'
     };
     return config;
   });

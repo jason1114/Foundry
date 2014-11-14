@@ -1,14 +1,23 @@
-.car-app {
+.editor-app {
     width: 97%;
     margin: 0 auto;
     font-family: 'trebuchet MS', 'Lucida sans', Arial;
     font-size: 14px;
     color: #444;
 }
+.add-field {
+    margin-left: 2em;
+}
+.add-field .switch_wrap {
+  margin-top: 9px;
+}
+.btn-add-field {
+    margin-top: 22px;
+}
 .car-edit {
     margin-top: 2em; 
 }
-.car-app .user_listing {
+.editor-app .user_listing {
     margin-bottom: 15px;
     border: 1px #C0BEBE solid;
 }

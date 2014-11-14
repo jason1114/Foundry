@@ -1,0 +1,154 @@
+<div ng-controller="ModelEditorController">
+	<div class="breadcrumb">
+	    <h1>Model Editor</h1>
+	</div>
+	<div class="model-editor">
+		<div>
+			<div class="add-model">
+
+			</div>
+			<div class="add-field">
+				<div class="field-add-switch">
+					<form class="row">
+						<div class="span2">
+							<label>"On" Value</label>
+							<input type="text" class="input-small" placeholder="value of 'on'" value="off">
+						</div>
+						<div class="span2">
+							<label>"Off" Value</label>
+						  	<input type="text" class="input-small" placeholder="value of 'off'" value="on">
+						</div> 
+					  	<div class="span2">
+							<label>Default Value</label>
+						  	<label class="switch_wrap" for="switch-default-value">
+						  		<input id="switch-default-value" type="checkbox"/>
+						  		<div class="switch"><span class="bullet"></span></div>
+					  		</label>
+						</div>
+						<div class="span2">
+							<label>Field Name</label>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						</div>
+						<div class="span2">
+							<a class="btn btn-info btn-add-field">Add Field</a>
+						</div>
+					</form>
+				</div>
+				<div class="field-add-text-input">
+					<form class="row">
+						<div class="span2">
+							<label>Default Value</label>
+							<input type="text" class="input-small">
+						</div>
+					  	<div class="span2">
+							<label>Required</label>
+						  	<label class="switch_wrap" for="text-input-required">
+						  		<input id="text-input-required" type="checkbox"/>
+						  		<div class="switch"><span class="bullet"></span></div>
+					  		</label>
+						</div>
+						<div class="span2">
+							<label>Field Name</label>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						</div>
+						<div class="span2">
+							<a class="btn btn-info btn-add-field">Add Field</a>
+						</div>
+					</form>
+				</div>
+				<div class="field-add-text-area">
+					<form class="row">
+						<div class="span2">
+							<label>Default Value</label>
+							<input type="text" class="input-small">
+						</div>
+					  	<div class="span2">
+							<label>Required</label>
+						  	<label class="switch_wrap" for="text-area-required">
+						  		<input id="text-area-required" type="checkbox"/>
+						  		<div class="switch"><span class="bullet"></span></div>
+					  		</label>
+						</div>
+						<div class="span2">
+							<label>Field Name</label>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						</div>
+						<div class="span2">
+							<a class="btn btn-info btn-add-field">Add Field</a>
+						</div>
+					</form>
+				</div>
+				<div class="field-add-rate">
+					<form class="row">
+						<div class="span2">
+							<label>Default Value</label>
+							<input type="number" class="input-small" required value="1" min="1" max="10">
+						</div>
+					  	<div class="span2">
+							<label>Required</label>
+						  	<label class="switch_wrap" for="rate-required">
+						  		<input id="rate-required" type="checkbox"/>
+						  		<div class="switch"><span class="bullet"></span></div>
+					  		</label>
+						</div>
+						<div class="span2">
+							<label>Field Name</label>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						</div>
+						<div class="span2">
+							<a class="btn btn-info btn-add-field">Add Field</a>
+						</div>
+					</form>
+				</div>
+				<div class="field-add-number-input">
+					<form class="row">
+						<div class="span2">
+							<label>Default Value</label>
+							<input type="number" class="input-small" required>
+						</div>
+					  	<div class="span2">
+							<label>Required</label>
+						  	<label class="switch_wrap" for="number-input-required">
+						  		<input id="number-input-required" type="checkbox"/>
+						  		<div class="switch"><span class="bullet"></span></div>
+					  		</label>
+						</div>
+						<div class="span2">
+							<label>Max Value</label>
+							<input type="number" class="input-small" required>
+						</div>
+						<div class="span2">
+							<label>Min Value</label>
+							<input type="number" class="input-small" required>
+						</div>
+						<div class="span2">
+							<label>Field Name</label>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						</div>
+						<div class="span2">
+							<a class="btn btn-info btn-add-field">Add Field</a>
+						</div>
+					</form>
+				</div>
+				<div class="field-add-image">
+					<form class="row">
+					  	<div class="span2">
+							<label>Required</label>
+						  	<label class="switch_wrap" for="image-required">
+						  		<input id="image-required" type="checkbox"/>
+						  		<div class="switch"><span class="bullet"></span></div>
+					  		</label>
+						</div>
+						<div class="span2">
+							<label>Field Name</label>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						</div>
+						<div class="span2">
+							<a class="btn btn-info btn-add-field">Add Field</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
