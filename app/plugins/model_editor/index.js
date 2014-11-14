@@ -46,6 +46,28 @@
         window.scope = $scope;
         generated_prefix = "_model_";
         $scope.generated_models = {};
+        $scope.fields_in_new_model = [];
+        $scope.push_field_to_new_model = function(type) {
+          var to_push;
+          to_push = {
+            type: type,
+            setting: null
+          };
+          switch (type) {
+            case '_field_switch':
+              break;
+            case '_field_text_input':
+              break;
+            case '_field_text_area':
+              break;
+            case '_field_rate':
+              break;
+            case '_field_number_input':
+              break;
+            case '_field_image':
+              break;
+          }
+        };
         _ref = foundry._models;
         _results = [];
         for (name in _ref) {

@@ -5,10 +5,18 @@
 	<div class="model-editor">
 		<div>
 			<div class="add-model">
-
+				<label>Select a field to Add </label>
+				<select ng-model="new_field">
+					<option value="_field_switch">Switch</option>
+					<option value="_field_text_input">Text Input</option>
+					<option value="_field_text_area">Text Area</option>
+					<option value="_field_rate">Rate</option>
+					<option value="_field_number_input">Number Input</option>
+					<option value="_field_image">Image</option>
+				</select>
 			</div>
 			<div class="add-field">
-				<div class="field-add-switch">
+				<div ng-if="new_field=='_field_switch'" class="field-add-switch">
 					<form class="row">
 						<div class="span2">
 							<label>"On" Value</label>
@@ -34,7 +42,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="field-add-text-input">
+				<div ng-if="new_field=='_field_text_input'" class="field-add-text-input">
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
@@ -56,7 +64,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="field-add-text-area">
+				<div ng-if="new_field=='_field_text_area'" class="field-add-text-area">
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
@@ -78,7 +86,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="field-add-rate">
+				<div ng-if="new_field=='_field_rate'" class="field-add-rate">
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
@@ -100,7 +108,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="field-add-number-input">
+				<div ng-if="new_field=='_field_number_input'" class="field-add-number-input">
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
@@ -130,7 +138,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="field-add-image">
+				<div ng-if="new_field=='_field_image'" class="field-add-image">
 					<form class="row">
 					  	<div class="span2">
 							<label>Required</label>
@@ -150,5 +158,24 @@
 				</div>
 			</div>
 		</div>
+		<table class="bordered">
+			<legend>Fields in new model</legend>
+		    <thead>
+			    <tr>
+			        <th>Field Name</th>        
+			        <th>Field Type</th>
+			        <th>Field Setting</th>
+			        <th>Actions</th>
+			    </tr>
+		    </thead>
+		    <tbody>
+		    	<tr ng-repeat="field in fields_in_new_model">
+		    		<td>{{field.name}}</td>
+		    		<td>{{field.type}}</td>
+		    		<td>{{field.setting}}</td>
+		    		<td><a class="btn btn-danger"><i class="icon-remove"></i></a></td>
+		    	</tr>
+			</tbody>
+		</table>
 	</div>
 </div>

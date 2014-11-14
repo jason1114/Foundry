@@ -32,8 +32,21 @@ define_controller = ()->
 
 		generated_prefix = "_model_"
 		$scope.generated_models = {}
+		$scope.fields_in_new_model = []
+		$scope.push_field_to_new_model = (type) ->
+			to_push = {
+				type: type
+				setting: null
+			}
+			switch type
+				when '_field_switch' then break;
+				when '_field_text_input' then break;
+				when '_field_text_area' then break;
+				when '_field_rate' then break;
+				when '_field_number_input' then break;
+				when '_field_image' then break;
 		for name, model of foundry._models
 			if name.indexOf(generated_prefix) isnt -1
 				$scope.generated_models[name.substr(generated_prefix.length)] = model
-		
+
 	])
