@@ -20,25 +20,26 @@
 					<form class="row">
 						<div class="span2">
 							<label>"On" Value</label>
-							<input type="text" class="input-small" placeholder="value of 'on'" value="off">
+							<input type="text" class="input-small" placeholder="value of 'on'" value="off" ng-model="$parent._field_switch_on_value">
 						</div>
 						<div class="span2">
 							<label>"Off" Value</label>
-						  	<input type="text" class="input-small" placeholder="value of 'off'" value="on">
+						  	<input type="text" class="input-small" placeholder="value of 'off'" value="on"
+						  	ng-model="$parent._field_switch_off_value">
 						</div> 
 					  	<div class="span2">
 							<label>Default Value</label>
 						  	<label class="switch_wrap" for="switch-default-value">
-						  		<input id="switch-default-value" type="checkbox"/>
+						  		<input id="switch-default-value" type="checkbox" ng-model="$parent._field_switch_default_value"/>
 						  		<div class="switch"><span class="bullet"></span></div>
 					  		</label>
 						</div>
 						<div class="span2">
 							<label>Field Name</label>
-						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
 						</div>
 						<div class="span2">
-							<a class="btn btn-info btn-add-field">Add Field</a>
+							<a class="btn btn-info btn-add-field" ng-click="push_field_to_new_model(new_field)">Add Field</a>
 						</div>
 					</form>
 				</div>
@@ -46,21 +47,21 @@
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
-							<input type="text" class="input-small">
+							<input type="text" class="input-small" ng-model="$parent._field_text_input_default_value">
 						</div>
 					  	<div class="span2">
 							<label>Required</label>
 						  	<label class="switch_wrap" for="text-input-required">
-						  		<input id="text-input-required" type="checkbox"/>
+						  		<input id="text-input-required" type="checkbox"/ ng-model="$parent._field_text_input_required">
 						  		<div class="switch"><span class="bullet"></span></div>
 					  		</label>
 						</div>
 						<div class="span2">
 							<label>Field Name</label>
-						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
 						</div>
 						<div class="span2">
-							<a class="btn btn-info btn-add-field">Add Field</a>
+							<a class="btn btn-info btn-add-field" ng-click="push_field_to_new_model(new_field)">Add Field</a>
 						</div>
 					</form>
 				</div>
@@ -68,21 +69,21 @@
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
-							<input type="text" class="input-small">
+							<input type="text" class="input-small" ng-model="$parent._field_text_area_default_value">
 						</div>
 					  	<div class="span2">
 							<label>Required</label>
 						  	<label class="switch_wrap" for="text-area-required">
-						  		<input id="text-area-required" type="checkbox"/>
+						  		<input id="text-area-required" type="checkbox" ng-model="$parent._field_text_area_required"/>
 						  		<div class="switch"><span class="bullet"></span></div>
 					  		</label>
 						</div>
 						<div class="span2">
 							<label>Field Name</label>
-						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
 						</div>
 						<div class="span2">
-							<a class="btn btn-info btn-add-field">Add Field</a>
+							<a class="btn btn-info btn-add-field" ng-click="push_field_to_new_model(new_field)">Add Field</a>
 						</div>
 					</form>
 				</div>
@@ -90,21 +91,21 @@
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
-							<input type="number" class="input-small" required value="1" min="1" max="10">
+							<input type="number" class="input-small" required value="1" min="1" max="10" ng-model="$parent._field_rate_default_value">
 						</div>
 					  	<div class="span2">
 							<label>Required</label>
 						  	<label class="switch_wrap" for="rate-required">
-						  		<input id="rate-required" type="checkbox"/>
+						  		<input id="rate-required" type="checkbox" ng-model="$parent._field_rate_required"/>
 						  		<div class="switch"><span class="bullet"></span></div>
 					  		</label>
 						</div>
 						<div class="span2">
 							<label>Field Name</label>
-						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
 						</div>
 						<div class="span2">
-							<a class="btn btn-info btn-add-field">Add Field</a>
+							<a class="btn btn-info btn-add-field" ng-click="push_field_to_new_model(new_field)">Add Field</a>
 						</div>
 					</form>
 				</div>
@@ -112,29 +113,29 @@
 					<form class="row">
 						<div class="span2">
 							<label>Default Value</label>
-							<input type="number" class="input-small" required>
+							<input type="number" class="input-small" ng-model="$parent._field_number_input_default_value" required>
 						</div>
 					  	<div class="span2">
 							<label>Required</label>
 						  	<label class="switch_wrap" for="number-input-required">
-						  		<input id="number-input-required" type="checkbox"/>
+						  		<input id="number-input-required" type="checkbox" ng-model="$parent._field_number_input_required"/>
 						  		<div class="switch"><span class="bullet"></span></div>
 					  		</label>
 						</div>
 						<div class="span2">
 							<label>Max Value</label>
-							<input type="number" class="input-small" required>
+							<input type="number" class="input-small" ng-model="$parent._field_number_input_max_value" required>
 						</div>
 						<div class="span2">
 							<label>Min Value</label>
-							<input type="number" class="input-small" required>
+							<input type="number" class="input-small" ng-model="$parent._field_number_input_min_value" required>
 						</div>
 						<div class="span2">
 							<label>Field Name</label>
-						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
 						</div>
 						<div class="span2">
-							<a class="btn btn-info btn-add-field">Add Field</a>
+							<a class="btn btn-info btn-add-field" ng-click="push_field_to_new_model(new_field)">Add Field</a>
 						</div>
 					</form>
 				</div>
@@ -143,16 +144,16 @@
 					  	<div class="span2">
 							<label>Required</label>
 						  	<label class="switch_wrap" for="image-required">
-						  		<input id="image-required" type="checkbox"/>
+						  		<input id="image-required" type="checkbox"/ ng-model="$parent._field_image_required">
 						  		<div class="switch"><span class="bullet"></span></div>
 					  		</label>
 						</div>
 						<div class="span2">
 							<label>Field Name</label>
-						  	<input id="field" type="text" class="input-small" placeholder="Field Name" required>
+						  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
 						</div>
 						<div class="span2">
-							<a class="btn btn-info btn-add-field">Add Field</a>
+							<a class="btn btn-info btn-add-field" ng-click="push_field_to_new_model(new_field)">Add Field</a>
 						</div>
 					</form>
 				</div>
@@ -173,7 +174,7 @@
 		    		<td>{{field.name}}</td>
 		    		<td>{{field.type}}</td>
 		    		<td>{{field.setting}}</td>
-		    		<td><a class="btn btn-danger"><i class="icon-remove"></i></a></td>
+		    		<td><a class="btn btn-danger" ng-click="delete_field_from_new_model($index)"><i class="icon-remove"></i></a></td>
 		    	</tr>
 			</tbody>
 		</table>
