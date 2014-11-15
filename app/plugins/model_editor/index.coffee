@@ -15,6 +15,8 @@ supported_field_setting = {
 	'_field_image': ["Image"]
 }
 common_fields = ["model_belonged_to", "field_name"]
+# used to keep model to store in the cloud
+model_placeholder = "_model_placeholder_"
 define('model_editor', ()->
 	user_plugin = 	
 		name : 'model_editor'
@@ -38,7 +40,6 @@ define_controller = ()->
 		# only for debug
 		window.scope = $scope
 
-		generated_prefix = "_model_"
 		$scope.generated_models = {}
 		$scope.fields_in_new_model = []
 		$scope.supported_field_setting = supported_field_setting
@@ -68,12 +69,12 @@ define_controller = ()->
 			$scope.fields_in_new_model.splice(index, 1)	
 
 		$scope.add_model = () ->
-			inner_model_name = generated_prefix+$scope.new_model_name
 			for name, model of foundry._models
-				if name is inner_model_name
+				if name is $scope.new_model_name
 					sweetAlert("Oops...", "Model #{$scope.new_model_name} already exists.", "error");
 					return
-			foundry.model inner_model_name, $scope.fields_in_new_model.map((field)->field.name), () ->
+			foundry.model $scope.new_model_name, $scope.fields_in_new_model.map((field)->field.name), (user_model) ->
+				
 				# store each field's setting
 				for field in $scope.fields_in_new_model
 					field_model = supported_field_models[field.type]
@@ -81,13 +82,24 @@ define_controller = ()->
 					field.setting.field_name = field.name
 					field_model.create(field.setting)
 				$scope.load()
+				$scope.selected_model = $scope.new_model_name
 				$scope.$apply()
 
+		$scope.del_model = () ->
+			
 
 		$scope.load = () ->
-			for name, model of foundry._models
-				if name.indexOf(generated_prefix) isnt -1
-					$scope.generated_models[name.substr(generated_prefix.length)] = model
+			for name, model of supported_field_models
+				for field in model.all()
+					if !$scope.generated_models[field.model_belonged_to]
+						$scope.generated_models[field.model_belonged_to] = []
+					field_info = {
+						name: field.field_name
+						type: name
+						setting: field
+					}
+					$scope.generated_models[field.model_belonged_to].push(field_info)
+
 		$scope.load()
 
 	])
