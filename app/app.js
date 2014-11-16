@@ -6,6 +6,7 @@
   }
 
   foundry.angular.dependency = [];
+  
   window.app_config = {}
   window.app_config.supported_field = {
     '_field_switch': ["on_value", "off_value", "default_value"],

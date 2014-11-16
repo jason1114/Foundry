@@ -39,19 +39,52 @@
   define_controller = function() {
     return angular.module('foundry').controller('ModelController', [
       '$scope', '$foundry', function($scope, $foundry) {
-        var field_name, file_module, supported_field_models, _i, _len, _ref;
+        var field_name, file_module, name, position, supported_field_models, _i, _len, _ref, _ref1;
         window.scope = $scope;
+        $scope.make_range = function(start, end, step) {
+          var result, v;
+          result = [];
+          v = start;
+          while (v <= end) {
+            push(v);
+            v += step;
+          }
+          return v;
+        };
         $scope.keys = Object.keys;
+        $scope.is_field_hidden = function(type) {
+          var idx;
+          idx = Object.keys(window.app_config.show_in_detail).indexOf(type);
+          if (idx === -1) {
+            return false;
+          } else {
+            return true;
+          }
+        };
+        $scope.current = {};
         $scope.show_in_detail = window.app_config.show_in_detail;
-        $scope.hide_in_left = $scope.hide_in_right = {};
+        $scope.hide_in_left = [];
+        $scope.hide_in_right = [];
+        _ref = $scope.show_in_detail;
+        for (name in _ref) {
+          position = _ref[name];
+          if (position === 'left') {
+            $scope.hide_in_left.push(name);
+          } else {
+            $scope.hide_in_right.push(name);
+          }
+        }
         supported_field_models = {};
-        _ref = Object.keys(supported_field);
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          field_name = _ref[_i];
+        _ref1 = Object.keys(supported_field);
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          field_name = _ref1[_i];
           supported_field_models[field_name] = foundry.load_model(field_name);
         }
         file_module = foundry.load('document');
-        $scope.upload = function() {
+        $scope.change_selected = function(name) {
+          return $scope.selected_model = name;
+        };
+        $scope.upload = function(field_name) {
           var spinner;
           spinner = $foundry.spinner({
             type: 'loading',
@@ -64,21 +97,22 @@
               name: file.name,
               link: file.directlink
             };
-            $scope.current.image = $scope.uploaded.link;
-            $scope.current.thumb = $scope.uploaded.thumb;
+            $scope.current[field_name] = $scope.uploaded.link;
+            $scope.current[field_name + "_thumb_"] = $scope.uploaded.thumb;
             $scope.choosed_file = null;
             spinner.hide();
             return $scope.$apply();
           });
         };
+        $scope.add = function() {};
         $scope.load = function() {
-          var attrs, field, field_info, model, model_info_list, name, user_models_num, _j, _len1, _ref1, _ref2, _results;
+          var attrs, field, field_info, model, model_info_list, user_models_num, _j, _len1, _ref2, _ref3, _results;
           $scope.generated_models = {};
           for (name in supported_field_models) {
             model = supported_field_models[name];
-            _ref1 = model.all();
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              field = _ref1[_j];
+            _ref2 = model.all();
+            for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+              field = _ref2[_j];
               if (!$scope.generated_models[field.model_belonged_to]) {
                 $scope.generated_models[field.model_belonged_to] = [];
               }
@@ -93,10 +127,10 @@
           $scope.user_models = {};
           $scope.user_records = {};
           user_models_num = Object.keys($scope.generated_models).length;
-          _ref2 = $scope.generated_models;
+          _ref3 = $scope.generated_models;
           _results = [];
-          for (name in _ref2) {
-            model_info_list = _ref2[name];
+          for (name in _ref3) {
+            model_info_list = _ref3[name];
             attrs = model_info_list.map(function(model_info) {
               return model_info.name;
             });

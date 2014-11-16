@@ -135,7 +135,7 @@
               $scope.$apply();
               return swal("Deleted!", "Your model and data has been deleted.", "success");
             } else {
-              return swal("Cancelled", "Your model and data is safe :)", "error");
+              return swal("Cancelled", "Your model and data are safe :)", "error");
             }
           });
         };

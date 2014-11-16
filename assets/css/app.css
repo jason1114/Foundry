@@ -15,7 +15,7 @@
 .btn-add-field {
     margin-top: 22px;
 }
-.car-edit {
+.model-edit {
     margin-top: 2em; 
 }
 .editor-app .user_listing {
@@ -44,6 +44,13 @@ td.show-setting td{
 .record-edit .btn {
   margin-top: 2px;
   margin-bottom: 2px;
+}
+.row-detail .row {
+  margin-left: 0;
+}
+tr.row-detail td {
+  padding: 0;
+  border: 0;
 }
 /* for table*/
 table {

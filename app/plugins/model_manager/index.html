@@ -4,34 +4,58 @@
 	</div>
 	<div class="model-editor" ng-if="selected_model">
 		<ul class="nav nav-tabs">
-		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models"><a href="#model_{{name}}" data-toggle="tab">{{name}}</a></li>
+		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" ng-click="change_selected(name)"><a href="#model_{{name}}" data-toggle="tab">{{name}}</a></li>
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" id="model_{{name}}">
 				<table class="bordered">
 				    <thead>
 					    <tr>
-					        <th ng-repeat="field_info in fields" ng-if="keys(show_in_detail).indexOf(field_info.type)==-1">{{field_info.name}}</th>
+					        <th ng-repeat="field_info in fields" >{{field_info.name}}</th>
 					        <th>Actions</th>
 					    </tr>
 				    </thead>
 				    <tbody>
 				    	<tr ng-repeat-start="record in user_records[name]">
-				    		<td ng-repeat="field_info in fields" ng-if="keys(show_in_detail).indexOf(field_info.type)==-1">{{record[field_info.name]}}</td>
+				    		<td ng-repeat="field_info in fields">
+				    			<div ng-if="!is_field_hidden(field_info.type)">
+				    				<div ng-if="field_info.type=='_field_text_input'">
+					    				{{record[field_info.name]}}
+					    			</div>
+					    			<div ng-if="field_info.type=='_field_number_input'">
+					    				{{record[field_info.name]}}
+					    			</div>
+					    			<div ng-if="field_info.type=='_field_rate'">
+					    				{{record[field_info.name]}}
+					    			</div>
+					    			<div ng-if="field_info.type=='_field_switch'">
+					    				{{record[field_info.name]}}
+					    			</div>
+				    			</div>
+				    			<em ng-if="is_field_hidden(field_info.type)">See details</em>
+				    		</td>
 				    		<td class="record-edit">
 				    			<a class="btn btn-small btn-info"><i class="icon-pencil"></i></a>
 				    			<a class="btn btn-small btn-danger"><i class="icon-remove"></i></a>
 				    		</td>
 				    	</tr>
-				    	<tr ng-repeat-end>
-				    		<td>
-				    			<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)==1">
-				    				{{record[field_info.name]}}
-				    			</div>
-				    		</td>
-				    		<td>
-				    			<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)==1">
-				    				{{record[field_info.name]}}
+				    	<tr ng-repeat-end class="row-detail">
+				    		<td colspan="{{fields.length+1}}">
+				    			<div class="row">
+				    				<div class="span6">
+				    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)!=-1">
+				    						<div ng-if="field_info.type=='_field_image'">
+							    				{{record[field_info.name]}}
+							    			</div>
+						    			</div>
+				    				</div>
+				    				<div class="span6">
+				    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)!=-1">
+						    				<div ng-if="field_info.type=='_field_text_area'">
+						    					<textarea>{{record[field_info.name]}}</textarea>
+							    			</div>
+						    			</div>
+				    				</div>
 				    			</div>
 				    		</td>
 				    	</tr>
@@ -40,80 +64,76 @@
 			</div>
 		</div>
 		
-		<form class="form-horizontal car-edit">
-			<div class="row">
+		<form class="form-horizontal model-edit">
+			<div class="row" ng-repeat="(name, fields) in generated_models" ng-if="selected_model==name">
 				<div class="span6">
-					  <div class="control-group">
-					    <label class="control-label" for="mode">Edit Mode</label>
-					    <div class="controls">
-					        <label class="switch_wrap" for="field">
-							  <input id="field" type="checkbox" ng-model="mode"/>
-							  <div class="switch"><span class="bullet"></span></div>
-							</label>
+					<div ng-repeat="field_info in fields">
+					  	<!-- for switch -->
+					  	<div class="control-group" ng-if="field_info.type=='_field_switch'">
+					    	<label class="control-label" for="mode">{{field_info.name}}</label>
+					    	<div class="controls">
+						        <label class="switch_wrap" for="switch-{{field_info.name}}">
+								  <input id="switch-{{field_info.name}}" type="checkbox" ng-model="current[field_info.name]" ng-true-value="field_info.setting.on_value" ng-false-value="field_info.setting.off_value"/>
+								  <div class="switch"><span class="bullet"></span></div>
+								</label>
+					    	</div>
 					    </div>
-					  </div>
-					  <div class="control-group">
-					    <label class="control-label" for="name">Name</label>
-					    <div class="controls">
-					      <input type="text" id="name" ng-model="current.name" placeholder="Car name">
+					    <!-- for text input -->
+					    <div class="control-group" ng-if="field_info.type=='_field_text_input'">
+						    <label class="control-label">{{field_info.name}}</label>
+						    <div class="controls">
+						      <input type="text" ng-model="current[field_info.name]" placeholder="" value="{{field_info.setting.default_value}}" {{field_info.setting.required?'required':''}}>
+						    </div>
 					    </div>
-					  </div>
-					  <div class="control-group">
-					    <label class="control-label" for="car_type">Car Type</label>
-					    <div class="controls">
-					      <select type="password" id="car_type" ng-model="current.car_type" placeholder="Car type">
-					      	<option>SUV</option>
-					      </select>
+					    <!-- for number input -->
+					    <div class="control-group" ng-if="field_info.type=='_field_number_input'">
+						    <label class="control-label">{{field_info.name}}</label>
+						    <div class="controls">
+						      <input type="number" ng-model="current[field_info.name]" placeholder="" value="{{field_info.setting.default_value}}" {{field_info.setting.required?'required':''}}>
+						    </div>
 					    </div>
-					  </div>
-					  <div class="control-group">
-					    <label class="control-label" for="rate">Rate</label>
-					    <div class="controls">
-					      <fieldset class="rating">
-						    <input type="radio" id="star5" name="rating" value="5" ng-model="current.rate"/><label for="star5" title="Rocks!">5 stars</label>
-						    <input type="radio" id="star4" name="rating" value="4" ng-model="current.rate"/><label for="star4" title="Pretty good">4 stars</label>
-						    <input type="radio" id="star3" name="rating" value="3" ng-model="current.rate"/><label for="star3" title="Meh">3 stars</label>
-						    <input type="radio" id="star2" name="rating" value="2" ng-model="current.rate"/><label for="star2" title="Kinda bad">2 stars</label>
-						    <input type="radio" id="star1" name="rating" value="1" ng-model="current.rate"/><label for="star1" title="Sucks big time">1 star</label>
-						</fieldset>
-					    </div>
-					  </div>
-					  <div class="control-group">
-					    <label class="control-label" for="price">Price</label>
-					    <div class="controls">
-					      <input type="number" id="price" ng-model="current.price"placeholder="Price">
-					    </div>
-					  </div>
-					  <div class="control-group">
-					    <label class="control-label" for="amount">Amount</label>
-					    <div class="controls">
-					    	<input type="number" id="amount" ng-model="current.amount" placeholder="Amount">
-					    </div>
-					  </div>
+					  	
+					  	<div class="control-group" ng-if="field_info.type=='_field_rate'">
+						    <label class="control-label">{{field_info.name}}</label>
+						    <div class="controls">
+						      	<fieldset class="rating">
+						      		<input ng-repeat-start="n in [] | range:5" type="radio" id="{{field_info.name}}-star-{{field_info.setting.max_rate-$index}}" name="rating" value="{{field_info.setting.max_rate-$index}}" ng-model="current[field_info.name]"/><label ng-repeat-end for="star{{field_info.name}}-star-{{field_info.setting.max_rate-$index}}" title="Rocks!">5 stars</label>
+								    <!-- <input type="radio" id="star5" name="rating" value="5" ng-model="current[field_info.name]"/><label for="star5" title="Rocks!">5 stars</label>
+								    <input type="radio" id="star4" name="rating" value="4" ng-model="current[field_info.name]"/><label for="star4" title="Pretty good">4 stars</label>
+								    <input type="radio" id="star3" name="rating" value="3" ng-model="current[field_info.name]"/><label for="star3" title="Meh">3 stars</label>
+								    <input type="radio" id="star2" name="rating" value="2" ng-model="current[field_info.name]"/><label for="star2" title="Kinda bad">2 stars</label>
+								    <input type="radio" id="star1" name="rating" value="1" ng-model="current[field_info.name]"/><label for="star1" title="Sucks big time">1 star</label> -->
+								</fieldset>
+						    </div>
+					  	</div>
+					</div>
 				</div>
 				<div class="span5">
-					<div class="control-group">
-					    <label class="control-label" for="image" style="text-align:left;">Image</label>
-					    <div class="controls">
-					    	<span class="btn btn-file pull-right"> <span class="fileupload-new">Select</span> <input type="file" en-model="choosed_file" fileread="" id="upload_file"> </span>
-					    	<a class="btn btn-success" ng-show="choosed_file" ng-click="upload()">Upload</a>
-					    	<input type="hidden" id="image" ng-model="current.image">
-					    </div>
+					<div ng-repeat="field_info in generated_models[selected_model]">
+						<div ng-if="field_info.type=='_field_image'">
+							<div class="control-group">
+							    <label class="control-label" for="image" style="text-align:left;">{{field_info.name}}</label>
+							    <div class="controls">
+							    	<span class="btn btn-file pull-right"> <span class="fileupload-new">Select</span> <input type="file" en-model="choosed_file" fileread="" id="upload_file"> </span>
+							    	<a class="btn btn-success" ng-show="choosed_file" ng-click="upload(field_info.name)">Upload</a>
+							    	<input type="hidden" id="image" ng-model="current[field_info.name]" {{field_info.setting.required?'required':''}}>
+							    </div>
+							</div>
+							<div class="user_listing" ng-if="uploaded"> 
+								<i class="file_thumb" style="background-image:url({{uploaded.thumb}});"></i> 
+								<a href="{{uploaded.link}}">
+									<span class="name">{{uploaded.name}}</span>
+								</a> 
+							</div>
+						</div>
+						<div class="control-group" ng-if="field_info.type=='_field_text_area'">
+						    <textarea placeholder="" style="width:100%;height:100px;padding: 2px 0 2px 0;" ng-model="current[field_info.name]" {{field_info.setting.required?'required':''}}>{{field_info.setting.default_value}}</textarea>
+						</div>
 					</div>
-					<div class="user_listing" ng-if="uploaded"> 
-						<i class="file_thumb" style="background-image:url({{uploaded.thumb}});"></i> 
-						<a href="{{uploaded.link}}">
-							<span class="name">{{uploaded.name}}</span>
-						</a> 
-					</div>
-					<div class="control-group">
-					    <textarea placeholder="  Details..." style="width:100%;height:100px;padding: 2px 0 2px 0;" ng-model="current.detail"></textarea>
-					</div>
-					<div class="control-group">
+					<div class="control-group" >
 					    <div class="controls">
 					    	<input type="reset" class="btn btn-inverse pull-right" value="Reset" style="margin-left: 1em;">
-					      	<button type="submit" class="btn btn-success pull-right" ng-hide="mode" ng-click="add()">Add Car</button>
-					      	<button type="submit" class="btn btn-success pull-right" ng-disabled="old==null" ng-if="mode">Update</button>
+					      	<button type="submit" class="btn btn-success pull-right" ng-hide="mode" ng-click="add()">Add Model</button>
 					    </div>
 					</div>
 				</div>

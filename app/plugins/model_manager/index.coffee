@@ -22,26 +22,46 @@ define('model_manager', ()->
 						define_controller()
 )
 
-define_controller = ()->
+define_controller = ()->	    
 	angular.module('foundry').controller('ModelController', ['$scope', '$foundry', ($scope, $foundry)->
 		# only for debug
 		window.scope = $scope
 
 		# util func
+		$scope.make_range = (start, end, step) ->
+			result = []
+			v = start
+			while v <= end 
+				push v
+				v += step
+			v
+			
 		$scope.keys = Object.keys
-		
+		$scope.is_field_hidden = (type) ->
+			idx = Object.keys(window.app_config.show_in_detail).indexOf(type)
+			if idx is -1 then false else true
+		# store info to add model
+		$scope.current = {}
+		# TODO support multiple choosed_file
+		# $scope.choosed_files = {}
 		$scope.show_in_detail = window.app_config.show_in_detail
 		# hide as row details
-		$scope.hide_in_left = $scope.hide_in_right = {}
-		
+		$scope.hide_in_left = []
+		$scope.hide_in_right = []
+		for name, position of $scope.show_in_detail
+			if position is 'left' 
+				$scope.hide_in_left.push name
+			else
+				$scope.hide_in_right.push name
 		supported_field_models = {}
 		for field_name in Object.keys(supported_field)
 			supported_field_models[field_name] = foundry.load_model(field_name) 
 
 		file_module = foundry.load('document')
-		
-
-		$scope.upload = ()->
+		$scope.change_selected = (name) ->
+			$scope.selected_model = name
+		# TODO multi image field upload
+		$scope.upload = (field_name)->
 			spinner = $foundry.spinner(
 				type : 'loading'
 				text : 'Uploading '
@@ -55,13 +75,15 @@ define_controller = ()->
 					name: file.name
 					link: file.directlink
 				}
-				$scope.current.image = $scope.uploaded.link
-				$scope.current.thumb = $scope.uploaded.thumb
+				$scope.current[field_name] = $scope.uploaded.link
+				$scope.current[field_name+"_thumb_"] = $scope.uploaded.thumb
 				$scope.choosed_file = null
 				spinner.hide()
 				$scope.$apply()
 			)
 			return
+		$scope.add = () ->
+
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models

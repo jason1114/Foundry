@@ -95,7 +95,7 @@ define_controller = ()->
 					$scope.$apply()
 					swal("Deleted!", "Your model and data has been deleted.", "success")
 				else
-					swal("Cancelled", "Your model and data is safe :)", "error")
+					swal("Cancelled", "Your model and data are safe :)", "error")
 					
 
 		$scope.load = () ->
