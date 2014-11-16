@@ -15,8 +15,6 @@ supported_field_setting = {
 	'_field_image': ["Image"]
 }
 common_fields = ["model_belonged_to", "field_name"]
-# used to keep model to store in the cloud
-model_placeholder = "_model_placeholder_"
 define('model_editor', ()->
 	user_plugin = 	
 		name : 'model_editor'
@@ -40,7 +38,6 @@ define_controller = ()->
 		# only for debug
 		window.scope = $scope
 
-		$scope.generated_models = {}
 		$scope.fields_in_new_model = []
 		$scope.supported_field_setting = supported_field_setting
 
@@ -85,10 +82,41 @@ define_controller = ()->
 				$scope.selected_model = $scope.new_model_name
 				$scope.$apply()
 
-		$scope.del_model = () ->
+		$scope.del_model = (name) ->
+			swal {   
+				title: "Are you sure?",   
+				text: "The model will be deleted as well as the data stored in it!",   
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "Yes, delete it!",   
+				cancelButtonText: "No, cancel plx!",   
+				closeOnConfirm: false,   
+				closeOnCancel: false 
+			}, (isConfirm) ->
+				if isConfirm
+					# delete all data
+					model_to_del = $scope.user_models[name]
+					if model_to_del
+						model_to_del.all().map (data) -> data.destroy()
+					# delete model info
+					for field in $scope.generated_models[name]
+						field.setting.destroy()
+					$scope.load()
+					new_model_name_list = Object.keys($scope.generated_models)
+					$scope.selected_model = new_model_name_list[0]
+					$scope.$apply()
+					swal("Deleted!", "Your model and data has been deleted.", "success")
+				else
+					swal("Cancelled", "Your model and data is safe :)", "error")
+					
+
+			
 			
 
+
 		$scope.load = () ->
+			$scope.generated_models = {}
 			for name, model of supported_field_models
 				for field in model.all()
 					if !$scope.generated_models[field.model_belonged_to]
@@ -99,6 +127,11 @@ define_controller = ()->
 						setting: field
 					}
 					$scope.generated_models[field.model_belonged_to].push(field_info)
+			$scope.user_models = {}
+			for name, model_info_list of $scope.generated_models
+				attrs = model_info_list.map (model_info) -> model_info.name
+				foundry.model name, attrs, (loaded_model) ->
+					$scope.user_models[name] = loaded_model
 
 		$scope.load()
 
