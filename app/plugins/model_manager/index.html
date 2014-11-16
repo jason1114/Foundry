@@ -1,30 +1,45 @@
-<div ng-controller="CarsController">
+<div ng-controller="ModelController">
 	<div class="breadcrumb">
-	    <h1>Cars Management</h1>
+	    <h1>Model Management</h1>
 	</div>
-	<div class="car-app">
-		<table class="bordered">
-		    <thead>
-			    <tr>
-			        <th>Name</th>        
-			        <th>Type</th>
-			        <th>Rate</th>
-			        <th>Price</th>
-			        <th>Amount</th>
-			        <th>Actions</th>
-			    </tr>
-		    </thead>
-		    <tbody>
-		    	<tr ng-repeat="car in cars">
-		    		<td>{{car.name}}</td>
-		    		<td>{{car.car_type}}</td>
-		    		<td>{{car.rate}}</td>
-		    		<td>{{car.price}}</td>
-		    		<td>{{car.amount}}</td>
-		    		<td></td>
-		    	</tr>
-			</tbody>
-		</table>
+	<div class="model-editor" ng-if="selected_model">
+		<ul class="nav nav-tabs">
+		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models"><a href="#model_{{name}}" data-toggle="tab">{{name}}</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" id="model_{{name}}">
+				<table class="bordered">
+				    <thead>
+					    <tr>
+					        <th ng-repeat="field_info in fields" ng-if="keys(show_in_detail).indexOf(field_info.type)==-1">{{field_info.name}}</th>
+					        <th>Actions</th>
+					    </tr>
+				    </thead>
+				    <tbody>
+				    	<tr ng-repeat-start="record in user_records[name]">
+				    		<td ng-repeat="field_info in fields" ng-if="keys(show_in_detail).indexOf(field_info.type)==-1">{{record[field_info.name]}}</td>
+				    		<td class="record-edit">
+				    			<a class="btn btn-small btn-info"><i class="icon-pencil"></i></a>
+				    			<a class="btn btn-small btn-danger"><i class="icon-remove"></i></a>
+				    		</td>
+				    	</tr>
+				    	<tr ng-repeat-end>
+				    		<td>
+				    			<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)==1">
+				    				{{record[field_info.name]}}
+				    			</div>
+				    		</td>
+				    		<td>
+				    			<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)==1">
+				    				{{record[field_info.name]}}
+				    			</div>
+				    		</td>
+				    	</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
 		<form class="form-horizontal car-edit">
 			<div class="row">
 				<div class="span6">
@@ -104,5 +119,8 @@
 				</div>
 			</div>
 		</form>
+	</div>
+	<div ng-if="!selected_model">
+		Sorry, there have not been any models arleady.
 	</div>
 </div>

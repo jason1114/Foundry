@@ -1,28 +1,46 @@
-define('cars', ()->
+supported_field = window.app_config.supported_field
+supported_field_setting = window.app_config.supported_field_setting
+common_fields = window.app_config.common_fields
+# show_in_table = Object.keys(supported_field).filter (field) ->
+# 	if Object.keys(window.app.show_in_detail).indexOf(field) is -1 then true
+define('model_manager', ()->
 	user_plugin = 	
-		name : 'cars'
-		anchor : '#/cars'
-		title : 'Cars Management'
+		name : 'model_manager'
+		anchor : '#/model_manager'
+		title : 'Model Management'
 		type : 'plugin'
 		icon : 'icon-list'
 		# initialize plugin,
 		init : ()->
 			self = @
 			console.log 'init'
-			foundry.model("Car",["name", "price", "car_type", "rate", "amount", "image", "thumb", "detail", "created_at", "modified_at"], ()->
-				foundry.initialized(self.name)
-				define_controller()
-			)
+			fields_num = Object.keys(supported_field).length
+			for field_model_name, attrs of supported_field
+				foundry.model field_model_name, attrs.concat(common_fields), () ->
+					if fields_num-- is 1
+						foundry.initialized(self.name)
+						define_controller()
 )
 
 define_controller = ()->
-	angular.module('foundry').controller('CarsController', ['$scope', '$foundry', ($scope, $foundry)->
+	angular.module('foundry').controller('ModelController', ['$scope', '$foundry', ($scope, $foundry)->
 		# only for debug
 		window.scope = $scope
+
+		# util func
+		$scope.keys = Object.keys
 		
-		car_model = foundry.load_model("Car")
+		$scope.show_in_detail = window.app_config.show_in_detail
+		# hide as row details
+		$scope.hide_in_left = $scope.hide_in_right = {}
+		
+		supported_field_models = {}
+		for field_name in Object.keys(supported_field)
+			supported_field_models[field_name] = foundry.load_model(field_name) 
+
 		file_module = foundry.load('document')
-		$scope.current = {}
+		
+
 		$scope.upload = ()->
 			spinner = $foundry.spinner(
 				type : 'loading'
@@ -44,27 +62,29 @@ define_controller = ()->
 				$scope.$apply()
 			)
 			return
-		$scope.add = () ->
-			if $scope.current.name and 
-				$scope.current.price and
-				$scope.current.car_type and
-				$scope.current.rate and
-				$scope.current.amount and
-				$scope.current.image and
-				$scope.current.thumb and
-				$scope.current.detail
-					to_save = $scope.current
-					now = new Date().getTime()
-					to_save.created_at = now
-					to_save.modified_at = now
-					created = car_model.create(to_save)
-					$scope.mode = true
-					$scope.old = created
-					$scope.load()
-			else 
-				alert "Please make sure every filed is filled."
 		$scope.load = () ->
-			$scope.cars = car_model.all()
+			$scope.generated_models = {}
+			for name, model of supported_field_models
+				for field in model.all()
+					if !$scope.generated_models[field.model_belonged_to]
+						$scope.generated_models[field.model_belonged_to] = []
+					field_info = {
+						name: field.field_name
+						type: name
+						setting: field
+					}
+					$scope.generated_models[field.model_belonged_to].push(field_info)
+			$scope.user_models = {}
+			$scope.user_records = {}
+			user_models_num = Object.keys($scope.generated_models).length
+			for name, model_info_list of $scope.generated_models
+				attrs = model_info_list.map (model_info) -> model_info.name
+				foundry.model name, attrs, (loaded_model) ->
+					$scope.user_models[name] = loaded_model
+					$scope.user_records[name] = loaded_model.all()
+					if user_models_num-- is 1
+						# all user models are created
+						$scope.selected_model = Object.keys($scope.generated_models)[0]
 
 		$scope.load()
 	])

@@ -6,7 +6,28 @@
   }
 
   foundry.angular.dependency = [];
-
+  window.app_config = {}
+  window.app_config.supported_field = {
+    '_field_switch': ["on_value", "off_value", "default_value"],
+    '_field_text_input': ["default_value", "required"],
+    '_field_text_area': ["default_value", "required"],
+    '_field_rate': ["default_value", "max_rate", "required"],
+    '_field_number_input': ["default_value", "max_value", "min_value", "required"],
+    '_field_image': ["required"]
+  }
+  window.app_config.supported_field_setting = {
+    '_field_switch': ["Switch"],
+    '_field_text_input': ["Text Input"],
+    '_field_text_area': ["Text Area"],
+    '_field_rate': ["Rate"],
+    '_field_number_input': ["Nimber Input"],
+    '_field_image': ["Image"]
+  }
+  window.app_config.common_fields = ["model_belonged_to", "field_name"]
+  window.app_config.show_in_detail = {
+    '_field_text_area' : 'right',
+    '_field_image': 'left'
+  }
   define('config', function() {
     var config;
     config = {};
@@ -15,8 +36,8 @@
       user: 'core/plugins/user',
       workspace: 'core/plugins/workspace',
       document: 'core/plugins/document',
-      model_editor : 'app/plugins/model_editor'
-      //model_manager : 'app/plugins/model_manager'
+      model_editor : 'app/plugins/model_editor',
+      model_manager : 'app/plugins/model_manager'
     };
     return config;
   });

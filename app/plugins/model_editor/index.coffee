@@ -1,20 +1,6 @@
-supported_field = {
-	'_field_switch': ["on_value", "off_value", "default_value"]
-	'_field_text_input': ["default_value", "required"]
-	'_field_text_area': ["default_value", "required"]
-	'_field_rate': ["default_value", "max_rate", "required"]
-	'_field_number_input': ["default_value", "max_value", "min_value", "required"]
-	'_field_image': ["required"]
-}
-supported_field_setting = {
-	'_field_switch': ["Switch"]
-	'_field_text_input': ["Text Input"]
-	'_field_text_area': ["Text Area"]
-	'_field_rate': ["Rate"]
-	'_field_number_input': ["Nimber Input"]
-	'_field_image': ["Image"]
-}
-common_fields = ["model_belonged_to", "field_name"]
+supported_field = window.app_config.supported_field
+supported_field_setting = window.app_config.supported_field_setting
+common_fields = window.app_config.common_fields
 define('model_editor', ()->
 	user_plugin = 	
 		name : 'model_editor'
@@ -38,6 +24,7 @@ define_controller = ()->
 		# only for debug
 		window.scope = $scope
 
+		$scope.show_in
 		$scope.fields_in_new_model = []
 		$scope.supported_field_setting = supported_field_setting
 
@@ -110,10 +97,6 @@ define_controller = ()->
 				else
 					swal("Cancelled", "Your model and data is safe :)", "error")
 					
-
-			
-			
-
 
 		$scope.load = () ->
 			$scope.generated_models = {}

@@ -2,25 +2,11 @@
 (function() {
   var common_fields, define_controller, supported_field, supported_field_setting;
 
-  supported_field = {
-    '_field_switch': ["on_value", "off_value", "default_value"],
-    '_field_text_input': ["default_value", "required"],
-    '_field_text_area': ["default_value", "required"],
-    '_field_rate': ["default_value", "max_rate", "required"],
-    '_field_number_input': ["default_value", "max_value", "min_value", "required"],
-    '_field_image': ["required"]
-  };
+  supported_field = window.app_config.supported_field;
 
-  supported_field_setting = {
-    '_field_switch': ["Switch"],
-    '_field_text_input': ["Text Input"],
-    '_field_text_area': ["Text Area"],
-    '_field_rate': ["Rate"],
-    '_field_number_input': ["Nimber Input"],
-    '_field_image': ["Image"]
-  };
+  supported_field_setting = window.app_config.supported_field_setting;
 
-  common_fields = ["model_belonged_to", "field_name"];
+  common_fields = window.app_config.common_fields;
 
   define('model_editor', function() {
     var user_plugin;
@@ -55,6 +41,7 @@
       '$scope', '$foundry', function($scope, $foundry) {
         var field_name, supported_field_models, _i, _len, _ref;
         window.scope = $scope;
+        $scope.show_in;
         $scope.fields_in_new_model = [];
         $scope.supported_field_setting = supported_field_setting;
         supported_field_models = {};
