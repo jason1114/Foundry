@@ -32,9 +32,9 @@ define_controller = ()->
 			result = []
 			v = start
 			while v <= end 
-				push v
+				result.push v
 				v += step
-			v
+			result
 			
 		$scope.keys = Object.keys
 		$scope.is_field_hidden = (type) ->
