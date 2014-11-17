@@ -5,7 +5,7 @@
 	<div class="model-editor">
 		<ul class="nav nav-tabs">
 		  <li class="{{!selected_model?'active':''}}"><a href="#new-model-editor" data-toggle="tab">New Model</a></li>
-		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models"><a href="#model_{{encodeURI(name)}}" data-toggle="tab">{{name}}</a></li>
+		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models"><a href="#model_{{encodeURI(name)}}" data-toggle="tab" ng-click="change_selected(name)">{{name}}</a></li>
 		</ul>
 		
 		<div class="tab-content">

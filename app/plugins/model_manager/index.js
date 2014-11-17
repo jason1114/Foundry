@@ -129,7 +129,7 @@
           for (_j = 0, _len1 = field_info_list.length; _j < _len1; _j++) {
             field_info = field_info_list[_j];
             is_required = field_info.setting.required;
-            if (is_required && (current_data.default_value === null || current_data.default_value === void 0)) {
+            if (is_required && (current_data[field_info.name] === null || current_data[field_info.name] === void 0)) {
               data[field_info.name] = field_info.setting.default_value;
             } else {
               data[field_info.name] = current_data[field_info.name];
@@ -137,6 +137,10 @@
           }
           $scope.user_models[$scope.selected_model].create(data);
           return $scope.load();
+        };
+        $scope.del = function(record, $index) {
+          record.destroy();
+          return $scope.user_records[$scope.selected_model].splice($index, 1);
         };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;

@@ -106,7 +106,9 @@ define_controller = ()->
 				else
 					swal("Cancelled", "Your model and data are safe :)", "error")
 					
-
+		$scope.change_selected = (name) ->
+			$scope.selected_model = name
+			
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models

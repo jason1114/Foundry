@@ -150,6 +150,9 @@
             }
           });
         };
+        $scope.change_selected = function(name) {
+          return $scope.selected_model = name;
+        };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, name, _j, _len1, _ref1, _ref2, _results;
           $scope.generated_models = {};

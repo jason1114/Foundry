@@ -100,12 +100,15 @@ define_controller = ()->
 			current_data = $scope.current[$scope.selected_model]
 			for field_info in field_info_list
 				is_required = field_info.setting.required
-				if is_required && (current_data.default_value is null or current_data.default_value is undefined)
+				if is_required && (current_data[field_info.name] is null or current_data[field_info.name] is undefined)
 					data[field_info.name] = field_info.setting.default_value
 				else
 					data[field_info.name] = current_data[field_info.name]
 			$scope.user_models[$scope.selected_model].create(data)
 			$scope.load()
+		$scope.del = (record, $index) ->
+			record.destroy()
+			$scope.user_records[$scope.selected_model].splice($index, 1)
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models
