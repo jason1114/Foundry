@@ -64,7 +64,7 @@
 			</div>
 		</div>
 		
-		<form class="form-horizontal model-edit">
+		<form class="form-horizontal model-edit" ng-submit="add()">
 			<div class="row" ng-repeat="(name, fields) in generated_models" ng-if="selected_model==name">
 				<div class="span6">
 					<div ng-repeat="field_info in fields">
@@ -73,8 +73,8 @@
 					    	<label class="control-label" for="mode">{{field_info.name}}</label>
 					    	<div class="controls">
 						        <label class="switch_wrap" for="switch-{{field_info.name}}">
-								  <input id="switch-{{field_info.name}}" type="checkbox" ng-model="current[field_info.name]" 
-								 ng-init="current[field_info.name]=(field_info.setting.default_value?field_info.setting.on_value:field_info.setting.off_value)" ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}"/>
+								  <input id="switch-{{field_info.name}}" type="checkbox" ng-model="current[name][field_info.name]" 
+								 ng-init="current[name][field_info.name]=(field_info.setting.default_value?field_info.setting.on_value:field_info.setting.off_value)" ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}"/>
 								  <div class="switch"><span class="bullet"></span></div>
 								</label>
 					    	</div>
@@ -83,22 +83,22 @@
 					    <div class="control-group" ng-if="field_info.type=='_field_text_input'">
 						    <label class="control-label">{{field_info.name}}</label>
 						    <div class="controls">
-						      <input type="text" ng-model="current[field_info.name]" ng-init="current[field_info.name]=field_info.setting.default_value" placeholder="" value="{{field_info.setting.default_value}}" {{field_info.setting.required?'required':''}}>
+						      <input type="text" ng-model="current[name][field_info.name]" ng-init="current[name][field_info.name]=field_info.setting.default_value" placeholder="" value="{{field_info.setting.default_value}}" ng-required="field_info.setting.required">
 						    </div>
 					    </div>
 					    <!-- for number input -->
 					    <div class="control-group" ng-if="field_info.type=='_field_number_input'">
 						    <label class="control-label">{{field_info.name}}</label>
 						    <div class="controls">
-						      <input type="number" ng-model="current[field_info.name]" ng-init="current[field_info.name]=field_info.setting.default_value" placeholder="" value="{{field_info.setting.default_value}}" {{field_info.setting.required?'required':''}}>
+						      <input type="number" ng-model="current[name][field_info.name]" ng-init="current[name][field_info.name]=field_info.setting.default_value" placeholder="" value="{{field_info.setting.default_value}}" ng-required="field_info.setting.required">
 						    </div>
 					    </div>
 					  	
 					  	<div class="control-group" ng-if="field_info.type=='_field_rate'">
 						    <label class="control-label">{{field_info.name}}</label>
 						    <div class="controls">
-						      	<fieldset class="rating" ng-init="current[field_info.name]=field_info.setting.default_value">
-						      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" name="rating" value="{{i}}" ng-model="current[field_info.name]"/><label ng-repeat-end for="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" title="Rocks!">{{i}} stars</label>
+						      	<fieldset class="rating" ng-init="current[name][field_info.name]=field_info.setting.default_value">
+						      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" name="rating" value="{{i}}" ng-model="current[name][field_info.name]"/><label ng-repeat-end for="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" title="Rocks!">{{i}} stars</label>
 								</fieldset>
 						    </div>
 					  	</div>
@@ -112,7 +112,7 @@
 							    <div class="controls">
 							    	<span class="btn btn-file pull-right"> <span class="fileupload-new">Select</span> <input type="file" en-model="choosed_file" fileread="" id="upload_file"> </span>
 							    	<a class="btn btn-success" ng-show="choosed_file" ng-click="upload(field_info.name)">Upload</a>
-							    	<input type="hidden" id="image" ng-model="current[field_info.name]" {{field_info.setting.required?'required':''}}>
+							    	<input type="hidden" id="image" ng-model="current[name][field_info.name]" ng-required="field_info.setting.required">
 							    </div>
 							</div>
 							<div class="user_listing" ng-if="uploaded"> 
@@ -123,13 +123,13 @@
 							</div>
 						</div>
 						<div class="control-group" ng-if="field_info.type=='_field_text_area'">
-						    <textarea placeholder="" style="width:100%;height:100px;padding: 2px 0 2px 0;" ng-model="current[field_info.name]" ng-init="current[field_info.name]=field_info.setting.default_value" {{field_info.setting.required?'required':''}}>{{field_info.setting.default_value}}</textarea>
+						    <textarea placeholder="" style="width:100%;height:100px;padding: 2px 0 2px 0;" ng-model="current[name][field_info.name]" ng-init="current[name][field_info.name]=field_info.setting.default_value" ng-required="field_info.setting.required">{{field_info.setting.default_value}}</textarea>
 						</div>
 					</div>
 					<div class="control-group" >
 					    <div class="controls">
 					    	<input type="reset" class="btn btn-inverse pull-right" value="Reset" style="margin-left: 1em;">
-					      	<button type="submit" class="btn btn-success pull-right" ng-hide="mode" ng-click="add()">Add Model</button>
+					      	<input type="submit" class="btn btn-success pull-right" value="Add Model">
 					    </div>
 					</div>
 				</div>

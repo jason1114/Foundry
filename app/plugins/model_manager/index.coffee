@@ -114,6 +114,6 @@ define_controller = ()->
 					if user_models_num-- is 1
 						# all user models are created
 						$scope.selected_model = Object.keys($scope.generated_models)[0]
-
+			$scope.current[name] = {} for name in Object.keys($scope.generated_models)
 		$scope.load()
 	])

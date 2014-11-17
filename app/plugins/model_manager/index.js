@@ -118,7 +118,7 @@
         };
         $scope.add = function() {};
         $scope.load = function() {
-          var attrs, field, field_info, model, model_info_list, user_models_num, _j, _len1, _ref2, _ref3, _results;
+          var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
           $scope.generated_models = {};
           for (name in supported_field_models) {
             model = supported_field_models[name];
@@ -140,19 +140,24 @@
           $scope.user_records = {};
           user_models_num = Object.keys($scope.generated_models).length;
           _ref3 = $scope.generated_models;
-          _results = [];
           for (name in _ref3) {
             model_info_list = _ref3[name];
             attrs = model_info_list.map(function(model_info) {
               return model_info.name;
             });
-            _results.push(foundry.model(name, attrs, function(loaded_model) {
+            foundry.model(name, attrs, function(loaded_model) {
               $scope.user_models[name] = loaded_model;
               $scope.user_records[name] = loaded_model.all();
               if (user_models_num-- === 1) {
                 return $scope.selected_model = Object.keys($scope.generated_models)[0];
               }
-            }));
+            });
+          }
+          _ref4 = Object.keys($scope.generated_models);
+          _results = [];
+          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
+            name = _ref4[_k];
+            _results.push($scope.current[name] = {});
           }
           return _results;
         };
