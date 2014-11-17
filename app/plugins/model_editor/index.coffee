@@ -26,7 +26,7 @@ define_controller = ()->
 
 		# util func
 		$scope.encodeURI = 	window.encodeURI
-		$scope.safeApply = (fn) ->
+		$scope.$safeApply = (fn) ->
 		  phase = this.$root.$$phase;
 		  if phase is '$apply' or phase is '$digest'
 		    if fn and (typeof(fn) is 'function')

@@ -37,7 +37,7 @@ define_controller = ()->
 			result
 		$scope.encodeURI = 	window.encodeURI
 		$scope.keys = Object.keys
-		$scope.safeApply = (fn) ->
+		$scope.$safeApply = (fn) ->
 		  phase = this.$root.$$phase;
 		  if phase is '$apply' or phase is '$digest'
 		    if fn and (typeof(fn) is 'function')
@@ -68,29 +68,44 @@ define_controller = ()->
 		$scope.change_selected = (name) ->
 			$scope.selected_model = name
 		# TODO multi image field upload
+		$scope.fileNameChanged = () ->
+			field_name = event.target.dataset.field
+			$scope.current[$scope.selected_model][field_name+"_choosed_file_"] = event.target.files[0]
+			$scope.$safeApply()
+			
 		$scope.upload = (field_name)->
 			spinner = $foundry.spinner(
 				type : 'loading'
 				text : 'Uploading '
 			)
-			Nimbus.Binary.upload_file($scope.choosed_file,(file)->
+			Nimbus.Binary.upload_file($scope.current[$scope.selected_model][field_name+'_choosed_file_'], (file)->
 				# push this into documents
 				file_module.set(file._file.id, file._file)
 
-				$scope.uploaded = {
+				$scope.current[$scope.selected_model][field_name+"_uploaded_"] = {
 					thumb: file._file.thumbnailLink
 					name: file.name
 					link: file.directlink
 				}
-				$scope.current[field_name] = $scope.uploaded.link
-				$scope.current[field_name+"_thumb_"] = $scope.uploaded.thumb
-				$scope.choosed_file = null
+				$scope.current[$scope.selected_model][field_name] = $scope.current[$scope.selected_model][field_name+"_uploaded_"].link
+				$scope.current[$scope.selected_model][field_name+"_thumb_"] = $scope.current[$scope.selected_model][field_name+"_uploaded_"].thumb
+				$scope.current[$scope.selected_model][field_name+"_choosed_file_"] = null
 				spinner.hide()
 				$scope.$safeApply()
 			)
 			return
 		$scope.add = () ->
-
+			field_info_list = $scope.generated_models[$scope.selected_model]
+			data = {}
+			current_data = $scope.current[$scope.selected_model]
+			for field_info in field_info_list
+				is_required = field_info.setting.required
+				if is_required && (current_data.default_value is null or current_data.default_value is undefined)
+					data[field_info.name] = field_info.setting.default_value
+				else
+					data[field_info.name] = current_data[field_info.name]
+			$scope.user_models[$scope.selected_model].create(data)
+			$scope.load()
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models
@@ -113,7 +128,7 @@ define_controller = ()->
 					$scope.user_records[name] = loaded_model.all()
 					if user_models_num-- is 1
 						# all user models are created
-						$scope.selected_model = Object.keys($scope.generated_models)[0]
+						$scope.selected_model = Object.keys($scope.generated_models)[0] if !$scope.selected_model
 			$scope.current[name] = {} for name in Object.keys($scope.generated_models)
 		$scope.load()
 	])

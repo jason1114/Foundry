@@ -42,7 +42,7 @@
         var field_name, supported_field_models, _i, _len, _ref;
         window.scope = $scope;
         $scope.encodeURI = window.encodeURI;
-        $scope.safeApply = function(fn) {
+        $scope.$safeApply = function(fn) {
           var phase;
           phase = this.$root.$$phase;
           if (phase === '$apply' || phase === '$digest') {

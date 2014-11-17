@@ -53,7 +53,7 @@
         };
         $scope.encodeURI = window.encodeURI;
         $scope.keys = Object.keys;
-        $scope.safeApply = function(fn) {
+        $scope.$safeApply = function(fn) {
           var phase;
           phase = this.$root.$$phase;
           if (phase === '$apply' || phase === '$digest') {
@@ -96,27 +96,48 @@
         $scope.change_selected = function(name) {
           return $scope.selected_model = name;
         };
+        $scope.fileNameChanged = function() {
+          field_name = event.target.dataset.field;
+          $scope.current[$scope.selected_model][field_name + "_choosed_file_"] = event.target.files[0];
+          return $scope.$safeApply();
+        };
         $scope.upload = function(field_name) {
           var spinner;
           spinner = $foundry.spinner({
             type: 'loading',
             text: 'Uploading '
           });
-          Nimbus.Binary.upload_file($scope.choosed_file, function(file) {
+          Nimbus.Binary.upload_file($scope.current[$scope.selected_model][field_name + '_choosed_file_'], function(file) {
             file_module.set(file._file.id, file._file);
-            $scope.uploaded = {
+            $scope.current[$scope.selected_model][field_name + "_uploaded_"] = {
               thumb: file._file.thumbnailLink,
               name: file.name,
               link: file.directlink
             };
-            $scope.current[field_name] = $scope.uploaded.link;
-            $scope.current[field_name + "_thumb_"] = $scope.uploaded.thumb;
-            $scope.choosed_file = null;
+            $scope.current[$scope.selected_model][field_name] = $scope.current[$scope.selected_model][field_name + "_uploaded_"].link;
+            $scope.current[$scope.selected_model][field_name + "_thumb_"] = $scope.current[$scope.selected_model][field_name + "_uploaded_"].thumb;
+            $scope.current[$scope.selected_model][field_name + "_choosed_file_"] = null;
             spinner.hide();
             return $scope.$safeApply();
           });
         };
-        $scope.add = function() {};
+        $scope.add = function() {
+          var current_data, data, field_info, field_info_list, is_required, _j, _len1;
+          field_info_list = $scope.generated_models[$scope.selected_model];
+          data = {};
+          current_data = $scope.current[$scope.selected_model];
+          for (_j = 0, _len1 = field_info_list.length; _j < _len1; _j++) {
+            field_info = field_info_list[_j];
+            is_required = field_info.setting.required;
+            if (is_required && (current_data.default_value === null || current_data.default_value === void 0)) {
+              data[field_info.name] = field_info.setting.default_value;
+            } else {
+              data[field_info.name] = current_data[field_info.name];
+            }
+          }
+          $scope.user_models[$scope.selected_model].create(data);
+          return $scope.load();
+        };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
           $scope.generated_models = {};
@@ -149,7 +170,9 @@
               $scope.user_models[name] = loaded_model;
               $scope.user_records[name] = loaded_model.all();
               if (user_models_num-- === 1) {
-                return $scope.selected_model = Object.keys($scope.generated_models)[0];
+                if (!$scope.selected_model) {
+                  return $scope.selected_model = Object.keys($scope.generated_models)[0];
+                }
               }
             });
           }
