@@ -30,7 +30,7 @@
 					    			<div ng-if="field_info.type=='_field_rate'">
 					    				<form>
 						    				<fieldset class="rating" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value">
-									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-{{record.id}}-{{i}}" name="rating" value="{{i}}" ng-model="record[field_info.name]" disabled/><label ng-repeat-end for="{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
+									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-{{record.id}}-{{i}}" name="{{field_info.name}}-{{record.id}}" value="{{i}}" ng-model="record[field_info.name]" disabled/><label ng-repeat-end for="{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
 											</fieldset>
 										</form>
 					    			</div>
