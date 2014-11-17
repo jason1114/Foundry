@@ -45,13 +45,25 @@
           var result, v;
           result = [];
           v = start;
-          while (v <= end) {
+          while ((end > start ? v <= end : v >= end)) {
             result.push(v);
             v += step;
           }
           return result;
         };
+        $scope.encodeURI = window.encodeURI;
         $scope.keys = Object.keys;
+        $scope.safeApply = function(fn) {
+          var phase;
+          phase = this.$root.$$phase;
+          if (phase === '$apply' || phase === '$digest') {
+            if (fn && (typeof fn === 'function')) {
+              return fn();
+            }
+          } else {
+            return this.$apply(fn);
+          }
+        };
         $scope.is_field_hidden = function(type) {
           var idx;
           idx = Object.keys(window.app_config.show_in_detail).indexOf(type);
@@ -101,7 +113,7 @@
             $scope.current[field_name + "_thumb_"] = $scope.uploaded.thumb;
             $scope.choosed_file = null;
             spinner.hide();
-            return $scope.$apply();
+            return $scope.$safeApply();
           });
         };
         $scope.add = function() {};

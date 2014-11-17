@@ -24,7 +24,16 @@ define_controller = ()->
 		# only for debug
 		window.scope = $scope
 
-		$scope.show_in
+		# util func
+		$scope.encodeURI = 	window.encodeURI
+		$scope.safeApply = (fn) ->
+		  phase = this.$root.$$phase;
+		  if phase is '$apply' or phase is '$digest'
+		    if fn and (typeof(fn) is 'function')
+		      fn()
+		  else 
+		    this.$apply(fn);
+		  
 		$scope.fields_in_new_model = []
 		$scope.supported_field_setting = supported_field_setting
 
@@ -67,7 +76,7 @@ define_controller = ()->
 					field_model.create(field.setting)
 				$scope.load()
 				$scope.selected_model = $scope.new_model_name
-				$scope.$apply()
+				$scope.$safeApply()
 
 		$scope.del_model = (name) ->
 			swal {   
@@ -92,7 +101,7 @@ define_controller = ()->
 					$scope.load()
 					new_model_name_list = Object.keys($scope.generated_models)
 					$scope.selected_model = new_model_name_list[0]
-					$scope.$apply()
+					$scope.$safeApply()
 					swal("Deleted!", "Your model and data has been deleted.", "success")
 				else
 					swal("Cancelled", "Your model and data are safe :)", "error")

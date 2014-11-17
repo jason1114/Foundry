@@ -4,10 +4,10 @@
 	</div>
 	<div class="model-editor" ng-if="selected_model">
 		<ul class="nav nav-tabs">
-		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" ng-click="change_selected(name)"><a href="#model_{{name}}" data-toggle="tab">{{name}}</a></li>
+		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" ng-click="change_selected(name)"><a href="#model_{{encodeURI(name)}}" data-toggle="tab">{{name}}</a></li>
 		</ul>
 		<div class="tab-content">
-			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" id="model_{{name}}">
+			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" id="model_{{encodeURI(name)}}">
 				<table class="bordered">
 				    <thead>
 					    <tr>
@@ -97,7 +97,7 @@
 						    <label class="control-label">{{field_info.name}}</label>
 						    <div class="controls">
 						      	<fieldset class="rating">
-						      		<input ng-repeat-start="i in make_range(1, field_info.setting.max_rate, 1)" type="radio" id="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" name="rating" value="{{field_info.setting.max_rate+'-'+i}}" ng-model="current[field_info.name]"/><label ng-repeat-end for="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" title="Rocks!">{{i}} stars</label>
+						      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" name="rating" value="{{i}}" ng-model="current[field_info.name]"/><label ng-repeat-end for="{{field_info.name}}-star-{{field_info.setting.max_rate+'-'+i}}" title="Rocks!">{{i}} stars</label>
 								    <!-- <input type="radio" id="star5" name="rating" value="5" ng-model="current[field_info.name]"/><label for="star5" title="Rocks!">5 stars</label>
 								    <input type="radio" id="star4" name="rating" value="4" ng-model="current[field_info.name]"/><label for="star4" title="Pretty good">4 stars</label>
 								    <input type="radio" id="star3" name="rating" value="3" ng-model="current[field_info.name]"/><label for="star3" title="Meh">3 stars</label>

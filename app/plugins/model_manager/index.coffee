@@ -31,12 +31,19 @@ define_controller = ()->
 		$scope.make_range = (start, end, step) ->
 			result = []
 			v = start
-			while v <= end 
+			while (if end>start then v<=end else v>= end)
 				result.push v
 				v += step
 			result
-			
+		$scope.encodeURI = 	window.encodeURI
 		$scope.keys = Object.keys
+		$scope.safeApply = (fn) ->
+		  phase = this.$root.$$phase;
+		  if phase is '$apply' or phase is '$digest'
+		    if fn and (typeof(fn) is 'function')
+		      fn()
+		  else 
+		    this.$apply(fn);
 		$scope.is_field_hidden = (type) ->
 			idx = Object.keys(window.app_config.show_in_detail).indexOf(type)
 			if idx is -1 then false else true
@@ -79,7 +86,7 @@ define_controller = ()->
 				$scope.current[field_name+"_thumb_"] = $scope.uploaded.thumb
 				$scope.choosed_file = null
 				spinner.hide()
-				$scope.$apply()
+				$scope.$safeApply()
 			)
 			return
 		$scope.add = () ->

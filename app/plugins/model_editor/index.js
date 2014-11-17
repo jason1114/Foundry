@@ -41,7 +41,18 @@
       '$scope', '$foundry', function($scope, $foundry) {
         var field_name, supported_field_models, _i, _len, _ref;
         window.scope = $scope;
-        $scope.show_in;
+        $scope.encodeURI = window.encodeURI;
+        $scope.safeApply = function(fn) {
+          var phase;
+          phase = this.$root.$$phase;
+          if (phase === '$apply' || phase === '$digest') {
+            if (fn && (typeof fn === 'function')) {
+              return fn();
+            }
+          } else {
+            return this.$apply(fn);
+          }
+        };
         $scope.fields_in_new_model = [];
         $scope.supported_field_setting = supported_field_setting;
         supported_field_models = {};
@@ -101,7 +112,7 @@
             }
             $scope.load();
             $scope.selected_model = $scope.new_model_name;
-            return $scope.$apply();
+            return $scope.$safeApply();
           });
         };
         $scope.del_model = function(name) {
@@ -132,7 +143,7 @@
               $scope.load();
               new_model_name_list = Object.keys($scope.generated_models);
               $scope.selected_model = new_model_name_list[0];
-              $scope.$apply();
+              $scope.$safeApply();
               return swal("Deleted!", "Your model and data has been deleted.", "success");
             } else {
               return swal("Cancelled", "Your model and data are safe :)", "error");
