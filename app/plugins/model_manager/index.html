@@ -28,10 +28,17 @@
 					    				{{record[field_info.name]}}
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_rate'">
-					    				{{record[field_info.name]}}
+					    				<form>
+						    				<fieldset class="rating" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value">
+									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-{{record.id}}-{{i}}" name="rating" value="{{i}}" ng-model="record[field_info.name]" disabled/><label ng-repeat-end for="{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
+											</fieldset>
+										</form>
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_switch'">
-					    				{{record[field_info.name]}}
+					    				<label class="switch_wrap" for="{{field_info.name}}-{{record.id}}">
+									  		<input id="{{field_info.name}}-{{record.id}}" type="checkbox" ng-model="record[field_info.name]"/ ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}" disabled>
+									  		<div class="switch"><span class="bullet"></span></div>
+								  		</label>
 					    			</div>
 				    			</div>
 				    			<em ng-if="is_field_hidden(field_info.type)">See details</em>
