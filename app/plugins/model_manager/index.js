@@ -206,6 +206,30 @@
             }
           });
         };
+        $scope.reset = function() {
+          var current_data, field_info, field_info_list, _j, _len1, _results;
+          event.preventDefault();
+          field_info_list = $scope.generated_models[$scope.selected_model];
+          current_data = $scope.current[$scope.selected_model];
+          _results = [];
+          for (_j = 0, _len1 = field_info_list.length; _j < _len1; _j++) {
+            field_info = field_info_list[_j];
+            if ("default_value" in field_info.setting) {
+              if (field_info.type === "_field_switch") {
+                if (field_info.setting.default_value) {
+                  _results.push(current_data[field_info.name] = field_info.setting.on_value);
+                } else {
+                  _results.push(current_data[field_info.name] = field_info.setting.off_value);
+                }
+              } else {
+                _results.push(current_data[field_info.name] = field_info.setting.default_value);
+              }
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
           $scope.generated_models = {};

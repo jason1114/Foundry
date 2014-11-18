@@ -162,6 +162,20 @@ define_controller = ()->
 					swal("Deleted!", "The record has been deleted.", "success")
 				else
 					swal("Cancelled", "Your data is safe :)", "error")
+		$scope.reset = () ->
+			event.preventDefault()
+			field_info_list = $scope.generated_models[$scope.selected_model]
+			current_data = $scope.current[$scope.selected_model]
+			for field_info in field_info_list
+				if "default_value" of field_info.setting 
+					if field_info.type is "_field_switch"
+						if field_info.setting.default_value
+							current_data[field_info.name] = field_info.setting.on_value 
+						else 
+							current_data[field_info.name] = field_info.setting.off_value
+					else 
+						current_data[field_info.name] = field_info.setting.default_value
+
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models
