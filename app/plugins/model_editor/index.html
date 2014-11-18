@@ -8,12 +8,14 @@
 	</div>
 	<div class="model-editor">
 		<ul class="nav nav-tabs">
-		  <li class="{{!selected_model?'active':''}}"><a href="#new-model-editor" data-toggle="tab">New Model</a></li>
+		  <li class="" ng-class="{active: !selected_model}"><a href="#new-model-editor" data-toggle="tab" ng-click="change_selected()">New Model</a></li>
 		  <li class="{{selected_model==name?'active':''}}" ng-repeat="name in tabs"><a href="#model_{{encodeURI(name)}}" data-toggle="tab" ng-click="change_selected(name)">{{name}} <button type="button" ng-click="del_tab($index)" class="close" data-dismiss="alert">&times;</button></a></li>
 		</ul>
 		
 		<div class="tab-content">
-			<div class="tab-pane {{!selected_model?'active':''}}" id="new-model-editor">
+			<!-- show model ready to create-->
+			<div class="tab-pane active" ng-if="!selected_model" id="new-model-editor">
+				<!-- fields to choose to add-->
 				<div>
 					<div class="add-model">
 						<label>Select a field to Add </label>
@@ -26,23 +28,23 @@
 							<form class="row" ng-submit="push_field_to_new_model(new_field)" >
 								<div class="span2">
 									<label>"On" Value</label>
-									<input type="text" class="input-small" placeholder="value of 'on'" value="off" ng-init="$parent._field_switch_on_value='on'" ng-model="$parent._field_switch_on_value" required>
+									<input type="text" class="input-small" placeholder="value of 'on'" value="off" ng-init="$parent.$parent._field_switch_on_value='on'" ng-model="$parent.$parent._field_switch_on_value" required>
 								</div>
 								<div class="span2">
 									<label>"Off" Value</label>
 								  	<input type="text" class="input-small" placeholder="value of 'off'" value="on"
-								  	ng-init="$parent._field_switch_off_value='off'" ng-model="$parent._field_switch_off_value" required>
+								  	ng-init="$parent.$parent._field_switch_off_value='off'" ng-model="$parent.$parent._field_switch_off_value" required>
 								</div> 
 							  	<div class="span2">
 									<label>Default Value</label>
 								  	<label class="switch_wrap" for="switch-default-value">
-								  		<input id="switch-default-value" type="checkbox" ng-init="$parent._field_switch_default_value=true" ng-model="$parent._field_switch_default_value"/>
+								  		<input id="switch-default-value" type="checkbox" ng-init="$parent.$parent._field_switch_default_value=true" ng-model="$parent.$parent._field_switch_default_value"/>
 								  		<div class="switch"><span class="bullet"></span></div>
 							  		</label>
 								</div>
 								<div class="span2">
 									<label>Field Name</label>
-								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
+								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.$parent.field_name_to_add" required>
 								</div>
 								<div class="span2">
 									<input type="submit" class="btn btn-info btn-add-field" value="Add Field">
@@ -53,18 +55,18 @@
 							<form class="row" ng-submit="push_field_to_new_model(new_field)">
 								<div class="span2">
 									<label>Default Value</label>
-									<input type="text" class="input-small" ng-model="$parent._field_text_input_default_value">
+									<input type="text" class="input-small" ng-model="$parent.$parent._field_text_input_default_value">
 								</div>
 							  	<div class="span2">
 									<label>Required</label>
 								  	<label class="switch_wrap" for="text-input-required">
-								  		<input id="text-input-required" type="checkbox"/ ng-init="$parent._field_text_input_required=true" ng-model="$parent._field_text_input_required">
+								  		<input id="text-input-required" type="checkbox"/ ng-init="$parent.$parent._field_text_input_required=true" ng-model="$parent.$parent._field_text_input_required">
 								  		<div class="switch"><span class="bullet"></span></div>
 							  		</label>
 								</div>
 								<div class="span2">
 									<label>Field Name</label>
-								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
+								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.$parent.field_name_to_add" required>
 								</div>
 								<div class="span2">
 									<input type="submit" class="btn btn-info btn-add-field" value="Add Field">
@@ -75,18 +77,18 @@
 							<form class="row" ng-submit="push_field_to_new_model(new_field)">
 								<div class="span2">
 									<label>Default Value</label>
-									<input type="text" class="input-small" ng-model="$parent._field_text_area_default_value">
+									<input type="text" class="input-small" ng-model="$parent.$parent._field_text_area_default_value">
 								</div>
 							  	<div class="span2">
 									<label>Required</label>
 								  	<label class="switch_wrap" for="text-area-required">
-								  		<input id="text-area-required" type="checkbox" ng-init="$parent._field_text_area_required=true" ng-model="$parent._field_text_area_required"/>
+								  		<input id="text-area-required" type="checkbox" ng-init="$parent.$parent._field_text_area_required=true" ng-model="$parent.$parent._field_text_area_required"/>
 								  		<div class="switch"><span class="bullet"></span></div>
 							  		</label>
 								</div>
 								<div class="span2">
 									<label>Field Name</label>
-								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
+								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.$parent.field_name_to_add" required>
 								</div>
 								<div class="span2">
 									<input type="submit" class="btn btn-info btn-add-field" value="Add Field">
@@ -97,22 +99,22 @@
 							<form class="row" ng-submit="push_field_to_new_model(new_field)">
 								<div class="span2">
 									<label>Default Value</label>
-									<input type="number" class="input-small" required value="1" min="1" max="10" ng-init="$parent._field_rate_default_value=1" ng-model="$parent._field_rate_default_value">
+									<input type="number" class="input-small" required value="1" min="1" max="10" ng-init="$parent.$parent._field_rate_default_value=1" ng-model="$parent.$parent._field_rate_default_value">
 								</div>
 								<div class="span2">
 									<label>Max Rate</label>
-									<input type="number" class="input-small" required value="1" min="1" max="10" ng-init="$parent._field_rate_max_rate=5" ng-model="$parent._field_rate_max_rate">
+									<input type="number" class="input-small" required value="1" min="1" max="10" ng-init="$parent.$parent._field_rate_max_rate=5" ng-model="$parent.$parent._field_rate_max_rate">
 								</div>
 							  	<div class="span2">
 									<label>Required</label>
 								  	<label class="switch_wrap" for="rate-required">
-								  		<input id="rate-required" type="checkbox" ng-init="$parent._field_rate_required=true" ng-model="$parent._field_rate_required"/>
+								  		<input id="rate-required" type="checkbox" ng-init="$parent.$parent._field_rate_required=true" ng-model="$parent.$parent._field_rate_required"/>
 								  		<div class="switch"><span class="bullet"></span></div>
 							  		</label>
 								</div>
 								<div class="span2">
 									<label>Field Name</label>
-								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
+								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.$parent.field_name_to_add" required>
 								</div>
 								<div class="span2">
 									<input type="submit" class="btn btn-info btn-add-field" value="Add Field">
@@ -123,26 +125,26 @@
 							<form class="row" ng-submit="push_field_to_new_model(new_field)">
 								<div class="span2">
 									<label>Default Value</label>
-									<input type="number" class="input-small" ng-model="$parent._field_number_input_default_value" required>
+									<input type="number" class="input-small" ng-model="$parent.$parent._field_number_input_default_value" required>
 								</div>
 							  	<div class="span2">
 									<label>Required</label>
 								  	<label class="switch_wrap" for="number-input-required">
-								  		<input id="number-input-required" type="checkbox" ng-init="$parent._field_number_input_required=true" ng-model="$parent._field_number_input_required"/>
+								  		<input id="number-input-required" type="checkbox" ng-init="$parent.$parent._field_number_input_required=true" ng-model="$parent.$parent._field_number_input_required"/>
 								  		<div class="switch"><span class="bullet"></span></div>
 							  		</label>
 								</div>
 								<div class="span2">
 									<label>Max Value</label>
-									<input type="number" class="input-small" ng-model="$parent._field_number_input_max_value" required>
+									<input type="number" class="input-small" ng-model="$parent.$parent._field_number_input_max_value" required>
 								</div>
 								<div class="span2">
 									<label>Min Value</label>
-									<input type="number" class="input-small" ng-model="$parent._field_number_input_min_value" required>
+									<input type="number" class="input-small" ng-model="$parent.$parent._field_number_input_min_value" required>
 								</div>
 								<div class="span2">
 									<label>Field Name</label>
-								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
+								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.$parent.field_name_to_add" required>
 								</div>
 								<div class="span2">
 									<input type="submit" class="btn btn-info btn-add-field" value="Add Field">
@@ -154,13 +156,13 @@
 							  	<div class="span2">
 									<label>Required</label>
 								  	<label class="switch_wrap" for="image-required">
-								  		<input id="image-required" type="checkbox"/ ng-init="$parent._field_image_required=true" ng-model="$parent._field_image_required">
+								  		<input id="image-required" type="checkbox"/ ng-init="$parent.$parent._field_image_required=true" ng-model="$parent.$parent._field_image_required">
 								  		<div class="switch"><span class="bullet"></span></div>
 							  		</label>
 								</div>
 								<div class="span2">
 									<label>Field Name</label>
-								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.field_name_to_add" required>
+								  	<input id="field" type="text" class="input-small" placeholder="Field Name" ng-model="$parent.$parent.field_name_to_add" required>
 								</div>
 								<div class="span2">
 									<input type="submit" class="btn btn-info btn-add-field" value="Add Field">
@@ -169,6 +171,7 @@
 						</div>
 					</div>
 				</div>
+				<!-- selected fields -->
 				<table class="bordered">
 					<legend>Fields in new model</legend>
 				    <thead>
@@ -269,11 +272,11 @@
 											</td>
 											<td>
 												<label>Max Value</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.max_value" disabled>
+												<input type="number" class="input-small" ng-model=".$parent.field.setting.max_value" disabled>
 											</td>
 											<td>
 												<label>Min Value</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.min_value" disabled>
+												<input type="number" class="input-small" ng-model=".$parent.field.setting.min_value" disabled>
 											</td>
 											<td>
 												<label>Required</label>
@@ -303,12 +306,14 @@
 				    	</tr>
 					</tbody>
 				</table>
+				<!-- button to add model -->
 				<form class="pull-right form-inline form-new-model-name">
-					<input type="text" ng-model="new_model_name" placeholder="New model name">
+					<input type="text" ng-model="$parent.new_model_name" placeholder="New model name">
 					<button  ng-click="add_model()" class="btn btn-success" ng-disabled="fields_in_new_model.length==0||!new_model_name"><i class="icon-plus"></i> Create Model</button>
 				</form>
 			</div>
-			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="name in tabs" id="model_{{encodeURI(name)}}">
+			<!-- show already exits models -->
+			<div class="tab-pane active" ng-if="selected_model==name" ng-repeat="name in tabs" id="model_{{encodeURI(name)}}">
 				<table ng-init="fields=generated_models[name]" class="bordered">
 					<legend>Fields in {{name}}</legend>
 				    <thead>

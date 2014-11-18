@@ -4,6 +4,9 @@
 .breadcrumb h1 {
     font-size: 15pt;
 }
+.model-editor .tab-content {
+    padding-bottom: 2em;
+}
 .editor-app {
     width: 97%;
     margin: 0 auto;

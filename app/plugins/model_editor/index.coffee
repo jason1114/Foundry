@@ -112,6 +112,8 @@ define_controller = ()->
 					field.setting.field_name = field.name
 					field_model.create(field.setting)
 				$scope.load()
+				$scope.tab_to_add = $scope.new_model_name
+				$scope.add_tab()
 				$scope.selected_model = $scope.new_model_name
 				$scope.$safeApply()
 

@@ -157,6 +157,8 @@
               field_model.create(field.setting);
             }
             $scope.load();
+            $scope.tab_to_add = $scope.new_model_name;
+            $scope.add_tab();
             $scope.selected_model = $scope.new_model_name;
             return $scope.$safeApply();
           });
