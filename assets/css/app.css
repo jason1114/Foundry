@@ -1,3 +1,9 @@
+.breadcrumb {
+    font-family: cursive;
+}
+.breadcrumb h1 {
+    font-size: 15pt;
+}
 .editor-app {
     width: 97%;
     margin: 0 auto;
@@ -85,6 +91,12 @@ input.show-detail-input:checked + form{
 tr.row-detail td {
   padding: 0;
   border: 0;
+}
+.model-selector {
+  margin-left: 2em;
+}
+.model-editor button.close {
+  margin-left: 8px;
 }
 /* for table*/
 table {

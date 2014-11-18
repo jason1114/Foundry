@@ -1,11 +1,15 @@
 <div ng-controller="ModelEditorController">
 	<div class="breadcrumb">
 	    <h1>Model Editor</h1>
+	    <select ng-model="tab_to_add" ng-change="add_tab()" class="model-selector">
+	    	<option>{{choose_a_model}}</option>
+	    	<option ng-repeat="(name, fields) in generated_models">{{name}}</option>
+	    </select>
 	</div>
 	<div class="model-editor">
 		<ul class="nav nav-tabs">
 		  <li class="{{!selected_model?'active':''}}"><a href="#new-model-editor" data-toggle="tab">New Model</a></li>
-		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models"><a href="#model_{{encodeURI(name)}}" data-toggle="tab" ng-click="change_selected(name)">{{name}}</a></li>
+		  <li class="{{selected_model==name?'active':''}}" ng-repeat="name in tabs"><a href="#model_{{encodeURI(name)}}" data-toggle="tab" ng-click="change_selected(name)">{{name}} <button type="button" ng-click="del_tab($index)" class="close" data-dismiss="alert">&times;</button></a></li>
 		</ul>
 		
 		<div class="tab-content">
@@ -304,8 +308,8 @@
 					<button  ng-click="add_model()" class="btn btn-success" ng-disabled="fields_in_new_model.length==0||!new_model_name"><i class="icon-plus"></i> Create Model</button>
 				</form>
 			</div>
-			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" id="model_{{encodeURI(name)}}">
-				<table class="bordered">
+			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="name in tabs" id="model_{{encodeURI(name)}}">
+				<table ng-init="fields=generated_models[name]" class="bordered">
 					<legend>Fields in {{name}}</legend>
 				    <thead>
 					    <tr>

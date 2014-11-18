@@ -47,6 +47,43 @@ define_controller = ()->
 		$scope.is_field_hidden = (type) ->
 			idx = Object.keys(window.app_config.show_in_detail).indexOf(type)
 			if idx is -1 then false else true
+
+		$scope.choose_a_model = "--Choose a model--"
+		$scope.tab_to_add = $scope.choose_a_model
+		if window.localStorage and window.localStorage.recent_tabs
+			$scope.tabs = JSON.parse(window.localStorage.recent_tabs)
+		else
+			$scope.tabs = []
+		save_recent_tabs = () ->
+			if window.localStorage and $scope.tabs
+				window.localStorage.recent_tabs = JSON.stringify($scope.tabs)
+		$scope.add_tab = () ->
+			tab_to_add = $scope.tab_to_add
+			$scope.tab_to_add = $scope.choose_a_model
+			return if !tab_to_add
+			if $scope.tabs.indexOf(tab_to_add) isnt -1
+				$scope.selected_model = tab_to_add
+				return
+			if $scope.tabs.length >= 10
+				# sweet alert
+				sweetAlert("Oops...", "You can only open 10 tabs at most.", "error");
+				return 
+			$scope.tabs.push(tab_to_add)
+			$scope.selected_model = tab_to_add
+			$scope.$safeApply()
+			save_recent_tabs()
+		$scope.del_tab = ($index) ->
+			if $scope.tabs[$index] is $scope.selected_model
+				if $scope.tabs[$index-1]
+					$scope.selected_model = $scope.tabs[$index-1]
+				else if $scope.tabs[$index+1]
+					$scope.selected_model = $scope.tabs[$index+1]
+				else 
+					$scope.selected_model = null
+			$scope.tabs.splice($index,1)
+			$scope.$safeApply()
+			save_recent_tabs()
+
 		# store info to add model
 		$scope.current = {}
 		# TODO support multiple choosed_file
@@ -107,8 +144,24 @@ define_controller = ()->
 			$scope.user_models[$scope.selected_model].create(data)
 			$scope.load()
 		$scope.del = (record, $index) ->
-			record.destroy()
-			$scope.user_records[$scope.selected_model].splice($index, 1)
+			swal {   
+				title: "Are you sure?",   
+				text: "This record will be deleted and it can't be recovered!",   
+				type: "warning",   
+				showCancelButton: true,   
+				confirmButtonColor: "#DD6B55",   
+				confirmButtonText: "Yes, delete it!",   
+				cancelButtonText: "No, cancel plx!",   
+				closeOnConfirm: false,   
+				closeOnCancel: false 
+			}, (isConfirm) ->
+				if isConfirm
+					record.destroy()
+					$scope.user_records[$scope.selected_model].splice($index, 1)
+					$scope.$safeApply()
+					swal("Deleted!", "The record has been deleted.", "success")
+				else
+					swal("Cancelled", "Your data is safe :)", "error")
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models
@@ -131,7 +184,8 @@ define_controller = ()->
 					$scope.user_records[name] = loaded_model.all()
 					if user_models_num-- is 1
 						# all user models are created
-						$scope.selected_model = Object.keys($scope.generated_models)[0] if !$scope.selected_model
+						if !$scope.selected_model and $scope.tabs.length>0
+							$scope.selected_model = $scope.tabs[0]
 			$scope.current[name] = {} for name in Object.keys($scope.generated_models)
 		$scope.load()
 	])

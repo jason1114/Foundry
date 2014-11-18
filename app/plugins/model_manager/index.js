@@ -39,7 +39,7 @@
   define_controller = function() {
     return angular.module('foundry').controller('ModelController', [
       '$scope', '$foundry', function($scope, $foundry) {
-        var field_name, file_module, name, position, supported_field_models, _i, _len, _ref, _ref1;
+        var field_name, file_module, name, position, save_recent_tabs, supported_field_models, _i, _len, _ref, _ref1;
         window.scope = $scope;
         $scope.make_range = function(start, end, step) {
           var result, v;
@@ -72,6 +72,52 @@
           } else {
             return true;
           }
+        };
+        $scope.choose_a_model = "--Choose a model--";
+        $scope.tab_to_add = $scope.choose_a_model;
+        if (window.localStorage && window.localStorage.recent_tabs) {
+          $scope.tabs = JSON.parse(window.localStorage.recent_tabs);
+        } else {
+          $scope.tabs = [];
+        }
+        save_recent_tabs = function() {
+          if (window.localStorage && $scope.tabs) {
+            return window.localStorage.recent_tabs = JSON.stringify($scope.tabs);
+          }
+        };
+        $scope.add_tab = function() {
+          var tab_to_add;
+          tab_to_add = $scope.tab_to_add;
+          $scope.tab_to_add = $scope.choose_a_model;
+          if (!tab_to_add) {
+            return;
+          }
+          if ($scope.tabs.indexOf(tab_to_add) !== -1) {
+            $scope.selected_model = tab_to_add;
+            return;
+          }
+          if ($scope.tabs.length >= 10) {
+            sweetAlert("Oops...", "You can only open 10 tabs at most.", "error");
+            return;
+          }
+          $scope.tabs.push(tab_to_add);
+          $scope.selected_model = tab_to_add;
+          $scope.$safeApply();
+          return save_recent_tabs();
+        };
+        $scope.del_tab = function($index) {
+          if ($scope.tabs[$index] === $scope.selected_model) {
+            if ($scope.tabs[$index - 1]) {
+              $scope.selected_model = $scope.tabs[$index - 1];
+            } else if ($scope.tabs[$index + 1]) {
+              $scope.selected_model = $scope.tabs[$index + 1];
+            } else {
+              $scope.selected_model = null;
+            }
+          }
+          $scope.tabs.splice($index, 1);
+          $scope.$safeApply();
+          return save_recent_tabs();
         };
         $scope.current = {};
         $scope.show_in_detail = window.app_config.show_in_detail;
@@ -139,8 +185,26 @@
           return $scope.load();
         };
         $scope.del = function(record, $index) {
-          record.destroy();
-          return $scope.user_records[$scope.selected_model].splice($index, 1);
+          return swal({
+            title: "Are you sure?",
+            text: "This record will be deleted and it can't be recovered!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel plx!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+          }, function(isConfirm) {
+            if (isConfirm) {
+              record.destroy();
+              $scope.user_records[$scope.selected_model].splice($index, 1);
+              $scope.$safeApply();
+              return swal("Deleted!", "The record has been deleted.", "success");
+            } else {
+              return swal("Cancelled", "Your data is safe :)", "error");
+            }
+          });
         };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
@@ -174,8 +238,8 @@
               $scope.user_models[name] = loaded_model;
               $scope.user_records[name] = loaded_model.all();
               if (user_models_num-- === 1) {
-                if (!$scope.selected_model) {
-                  return $scope.selected_model = Object.keys($scope.generated_models)[0];
+                if (!$scope.selected_model && $scope.tabs.length > 0) {
+                  return $scope.selected_model = $scope.tabs[0];
                 }
               }
             });

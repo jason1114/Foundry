@@ -33,7 +33,44 @@ define_controller = ()->
 		      fn()
 		  else 
 		    this.$apply(fn);
-		  
+		# for manage tabs
+		$scope.choose_a_model = "--Choose a model--"
+		$scope.tab_to_add = $scope.choose_a_model
+		if window.localStorage and window.localStorage.recent_tabs_model
+			$scope.tabs = JSON.parse(window.localStorage.recent_tabs_model)
+		else
+			$scope.tabs = []
+		save_recent_tabs = () ->
+			if window.localStorage and $scope.tabs
+				window.localStorage.recent_tabs_model = JSON.stringify($scope.tabs)
+		$scope.add_tab = () ->
+			tab_to_add = $scope.tab_to_add
+			$scope.tab_to_add = $scope.choose_a_model
+			return if !tab_to_add
+			if $scope.tabs.indexOf(tab_to_add) isnt -1
+				$scope.selected_model = tab_to_add
+				return
+			if $scope.tabs.length >= 10
+				# sweet alert
+				sweetAlert("Oops...", "You can only open 10 tabs at most.", "error");
+				return 
+			$scope.tabs.push(tab_to_add)
+			$scope.selected_model = tab_to_add
+			$scope.$safeApply()
+			save_recent_tabs()
+		$scope.del_tab = ($index) ->
+			if $scope.tabs[$index] is $scope.selected_model
+				if $scope.tabs[$index-1]
+					$scope.selected_model = $scope.tabs[$index-1]
+				else if $scope.tabs[$index+1]
+					$scope.selected_model = $scope.tabs[$index+1]
+				else 
+					$scope.selected_model = null
+			$scope.tabs.splice($index,1)
+			$scope.$safeApply()
+			save_recent_tabs()
+
+
 		$scope.fields_in_new_model = []
 		$scope.supported_field_setting = supported_field_setting
 

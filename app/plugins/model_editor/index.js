@@ -39,7 +39,7 @@
   define_controller = function() {
     return angular.module('foundry').controller('ModelEditorController', [
       '$scope', '$foundry', function($scope, $foundry) {
-        var field_name, supported_field_models, _i, _len, _ref;
+        var field_name, save_recent_tabs, supported_field_models, _i, _len, _ref;
         window.scope = $scope;
         $scope.encodeURI = window.encodeURI;
         $scope.$safeApply = function(fn) {
@@ -52,6 +52,52 @@
           } else {
             return this.$apply(fn);
           }
+        };
+        $scope.choose_a_model = "--Choose a model--";
+        $scope.tab_to_add = $scope.choose_a_model;
+        if (window.localStorage && window.localStorage.recent_tabs_model) {
+          $scope.tabs = JSON.parse(window.localStorage.recent_tabs_model);
+        } else {
+          $scope.tabs = [];
+        }
+        save_recent_tabs = function() {
+          if (window.localStorage && $scope.tabs) {
+            return window.localStorage.recent_tabs_model = JSON.stringify($scope.tabs);
+          }
+        };
+        $scope.add_tab = function() {
+          var tab_to_add;
+          tab_to_add = $scope.tab_to_add;
+          $scope.tab_to_add = $scope.choose_a_model;
+          if (!tab_to_add) {
+            return;
+          }
+          if ($scope.tabs.indexOf(tab_to_add) !== -1) {
+            $scope.selected_model = tab_to_add;
+            return;
+          }
+          if ($scope.tabs.length >= 10) {
+            sweetAlert("Oops...", "You can only open 10 tabs at most.", "error");
+            return;
+          }
+          $scope.tabs.push(tab_to_add);
+          $scope.selected_model = tab_to_add;
+          $scope.$safeApply();
+          return save_recent_tabs();
+        };
+        $scope.del_tab = function($index) {
+          if ($scope.tabs[$index] === $scope.selected_model) {
+            if ($scope.tabs[$index - 1]) {
+              $scope.selected_model = $scope.tabs[$index - 1];
+            } else if ($scope.tabs[$index + 1]) {
+              $scope.selected_model = $scope.tabs[$index + 1];
+            } else {
+              $scope.selected_model = null;
+            }
+          }
+          $scope.tabs.splice($index, 1);
+          $scope.$safeApply();
+          return save_recent_tabs();
         };
         $scope.fields_in_new_model = [];
         $scope.supported_field_setting = supported_field_setting;

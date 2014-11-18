@@ -1,85 +1,16 @@
 <div ng-controller="ModelController">
 	<div class="breadcrumb">
 	    <h1>Model Management</h1>
+	    <select ng-model="tab_to_add" ng-change="add_tab()" class="model-selector">
+	    	<option>{{choose_a_model}}</option>
+	    	<option ng-repeat="(name, fields) in generated_models">{{name}}</option>
+	    </select>
 	</div>
 	<div class="model-editor" ng-if="selected_model">
 		<ul class="nav nav-tabs">
-		  <li class="{{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" ng-click="change_selected(name)"><a href="#model_{{encodeURI(name)}}" data-toggle="tab">{{name}}</a></li>
+		  <li class="{{selected_model==name?'active':''}}" ng-repeat="name in tabs" ng-click="change_selected(name)"><a href="#model_{{encodeURI(name)}}" data-toggle="tab">{{name}} <button type="button" ng-click="del_tab($index)" class="close" data-dismiss="alert">&times;</button></a> </li>
 		</ul>
-		<div class="tab-content">
-			<div class="tab-pane {{selected_model==name?'active':''}}" ng-repeat="(name, fields) in generated_models" id="model_{{encodeURI(name)}}">
-				<table class="bordered">
-				    <thead>
-					    <tr>
-					    	<th>*</th>
-					        <th ng-repeat="field_info in fields" >{{field_info.name}}</th>
-					        <th>Actions</th>
-					    </tr>
-				    </thead>
-				    <tbody>
-				    	<tr ng-repeat-start="record in user_records[name]">
-				    		<td><label for="{{name}}-{{$index}}" class="show-row-detail btn btn-mini btn-success"><i class="icon-plus"></i></label></td>
-				    		<td ng-repeat="field_info in fields">
-				    			<div ng-if="!is_field_hidden(field_info.type)">
-				    				<div ng-if="field_info.type=='_field_text_input'">
-					    				{{record[field_info.name]}}
-					    			</div>
-					    			<div ng-if="field_info.type=='_field_number_input'">
-					    				{{record[field_info.name]}}
-					    			</div>
-					    			<div ng-if="field_info.type=='_field_rate'">
-					    				<form>
-						    				<fieldset class="rating" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value">
-									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-{{record.id}}-{{i}}" name="{{field_info.name}}-{{record.id}}" value="{{i}}" ng-model="record[field_info.name]" disabled/><label ng-repeat-end for="{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
-											</fieldset>
-										</form>
-					    			</div>
-					    			<div ng-if="field_info.type=='_field_switch'">
-					    				<label class="switch_wrap" for="{{field_info.name}}-{{record.id}}">
-									  		<input id="{{field_info.name}}-{{record.id}}" type="checkbox" ng-model="record[field_info.name]"/ ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}" disabled>
-									  		<div class="switch"><span class="bullet"></span></div>
-								  		</label>
-					    			</div>
-				    			</div>
-				    			<em ng-if="is_field_hidden(field_info.type)">See details</em>
-				    		</td>
-				    		<td class="record-edit">
-				    			<a class="btn btn-small btn-info"><i class="icon-pencil"></i></a>
-				    			<a class="btn btn-small btn-danger" ng-click="del(record,$index)"><i class="icon-remove"></i></a>
-				    		</td>
-				    	</tr>
-				    	<tr ng-repeat-end class="row-detail">
-				    		
-				    		<td colspan="{{fields.length+2}}">
-				    			<div class="row">
-				    				<input class="show-detail-input" type="checkbox" id="{{name}}-{{$index}}">
-				    				<form>
-					    				<div class="span6">
-					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)!=-1">
-					    						<div ng-if="field_info.type=='_field_image'">
-					    							<label>{{field_info.name}}</label>
-								    				<img ng-src="{{record[field_info.name]}}" />
-									    			
-								    			</div>
-							    			</div>
-					    				</div>
-					    				<div class="span6">
-					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)!=-1">
-							    				<div ng-if="field_info.type=='_field_text_area'">
-							    					<label>{{field_info.name}}</label>
-							    					<textarea style="width:97%;" disabled>{{record[field_info.name]}}</textarea>
-								    			</div>
-							    			</div>
-					    				</div>
-					    			</form>
-				    			</div>
-				    		</td>
-				    	</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		
+		<!-- form to add model instance -->
 		<form class="form-horizontal model-edit" ng-submit="add()">
 			<div class="row" ng-if="selected_model">
 				<div class="span6">
@@ -151,6 +82,81 @@
 				</div>
 			</div>
 		</form>
+		<!-- model instance table -->
+		<div class="tab-content">
+			<div class="tab-pane {{selected_model==name?'active':''}}" ng-if="selected_model==name" ng-repeat="name in tabs" id="model_{{encodeURI(name)}}">
+				<table ng-init="fields=generated_models[name]" class="bordered">
+				    <thead>
+					    <tr>
+					    	<th>*</th>
+					        <th ng-repeat="field_info in fields" >{{field_info.name}}</th>
+					        <th>Actions</th>
+					    </tr>
+				    </thead>
+				    <tbody>
+				    	<tr ng-repeat-start="record in user_records[name]">
+				    		<td><label for="{{name}}-{{$index}}" class="show-row-detail btn btn-mini btn-success"><i class="icon-plus"></i></label></td>
+				    		<td ng-repeat="field_info in fields">
+				    			<div ng-if="!is_field_hidden(field_info.type)">
+				    				<div ng-if="field_info.type=='_field_text_input'">
+					    				{{record[field_info.name]}}
+					    			</div>
+					    			<div ng-if="field_info.type=='_field_number_input'">
+					    				{{record[field_info.name]}}
+					    			</div>
+					    			<div ng-if="field_info.type=='_field_rate'">
+					    				<form>
+						    				<fieldset class="rating" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value">
+									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-{{record.id}}-{{i}}" name="{{field_info.name}}-{{record.id}}" value="{{i}}" ng-model="record[field_info.name]" disabled/><label ng-repeat-end for="{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
+											</fieldset>
+										</form>
+					    			</div>
+					    			<div ng-if="field_info.type=='_field_switch'">
+					    				{{record[field_info.name]}}
+					    				<!-- <label class="switch_wrap" for="{{field_info.name}}-{{record.id}}">
+									  		<input id="{{field_info.name}}-{{record.id}}" type="checkbox" ng-model="record[field_info.name]"/ ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}" disabled>
+									  		<div class="switch"><span class="bullet"></span></div>
+								  		</label> -->
+					    			</div>
+				    			</div>
+				    			<em ng-if="is_field_hidden(field_info.type)">See details</em>
+				    		</td>
+				    		<td class="record-edit">
+				    			<a class="btn btn-small btn-info"><i class="icon-pencil"></i></a>
+				    			<a class="btn btn-small btn-danger" ng-click="del(record,$index)"><i class="icon-remove"></i></a>
+				    		</td>
+				    	</tr>
+				    	<tr ng-repeat-end class="row-detail">
+				    		
+				    		<td colspan="{{fields.length+2}}">
+				    			<div class="row">
+				    				<input class="show-detail-input" type="checkbox" id="{{name}}-{{$index}}">
+				    				<form>
+					    				<div class="span6">
+					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)!=-1">
+					    						<div ng-if="field_info.type=='_field_image'">
+					    							<label>{{field_info.name}}</label>
+								    				<img ng-src="{{record[field_info.name]}}" />
+									    			
+								    			</div>
+							    			</div>
+					    				</div>
+					    				<div class="span6">
+					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)!=-1">
+							    				<div ng-if="field_info.type=='_field_text_area'">
+							    					<label>{{field_info.name}}</label>
+							    					<textarea style="width:97%;" disabled>{{record[field_info.name]}}</textarea>
+								    			</div>
+							    			</div>
+					    				</div>
+					    			</form>
+				    			</div>
+				    		</td>
+				    	</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 	<div ng-if="!selected_model">
 		Sorry, there have not been any models arleady.
