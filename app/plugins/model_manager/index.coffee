@@ -102,35 +102,54 @@ define_controller = ()->
 			supported_field_models[field_name] = foundry.load_model(field_name) 
 
 		file_module = foundry.load('document')
+
+		# for edit model instance
+		$scope.model_to_edit = {}
+		$scope.instance_in_edit = {}
+		$scope.init_edit_model = (record) ->
+			$scope.model_to_edit[record.id] = angular.copy(record)
 		$scope.change_selected = (name) ->
 			$scope.selected_model = name
 		# TODO multi image field upload
 		$scope.fileNameChanged = () ->
 			field_name = event.target.dataset.field
-			$scope.current[$scope.selected_model][field_name+"_choosed_file_"] = event.target.files[0]
+			uuid = event.target.dataset.uuid
+			instance = if uuid then $scope.model_to_edit[uuid] else $scope.current[$scope.selected_model]
+			instance[field_name+"_choosed_file_"] = event.target.files[0]
 			$scope.$safeApply()
 			
-		$scope.upload = (field_name)->
+		$scope.upload = (field_name, uuid)->
 			spinner = $foundry.spinner(
 				type : 'loading'
 				text : 'Uploading '
 			)
-			Nimbus.Binary.upload_file($scope.current[$scope.selected_model][field_name+'_choosed_file_'], (file)->
+			instance = if uuid then $scope.model_to_edit[uuid] else $scope.current[$scope.selected_model]
+			Nimbus.Binary.upload_file(instance[field_name+'_choosed_file_'], (file)->
 				# push this into documents
 				file_module.set(file._file.id, file._file)
 
-				$scope.current[$scope.selected_model][field_name+"_uploaded_"] = {
+				instance[field_name+"_uploaded_"] = {
 					thumb: file._file.thumbnailLink
 					name: file.name
 					link: file.directlink
 				}
-				$scope.current[$scope.selected_model][field_name] = $scope.current[$scope.selected_model][field_name+"_uploaded_"].link
-				$scope.current[$scope.selected_model][field_name+"_thumb_"] = $scope.current[$scope.selected_model][field_name+"_uploaded_"].thumb
-				$scope.current[$scope.selected_model][field_name+"_choosed_file_"] = null
+				instance[field_name] = instance[field_name+"_uploaded_"].link
+				instance[field_name+"_thumb_"] = instance[field_name+"_uploaded_"].thumb
+				instance[field_name+"_choosed_file_"] = null
 				spinner.hide()
 				$scope.$safeApply()
 			)
 			return
+
+		$scope.enter_edit = (record) ->
+			$scope.instance_in_edit[record.id] = true
+
+		$scope.submit_edit = (record) ->
+			$scope.instance_in_edit[record.id] = false
+
+		$scope.cancel_edit = (record) ->
+			$scope.instance_in_edit[record.id] = false			
+
 		$scope.add = () ->
 			field_info_list = $scope.generated_models[$scope.selected_model]
 			data = {}

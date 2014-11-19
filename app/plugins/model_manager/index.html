@@ -37,7 +37,7 @@
 					    <div class="control-group" ng-if="field_info.type=='_field_number_input'">
 						    <label class="control-label">{{field_info.name}}</label>
 						    <div class="controls">
-						      <input type="number" ng-model="current[selected_model][field_info.name]" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value" placeholder="" value="{{field_info.setting.default_value}}" ng-required="field_info.setting.required">
+						      <input type="number" ng-model="current[selected_model][field_info.name]" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value" placeholder="" max="{{field_info.setting.max_value}}" min="{{field_info.setting.min_value}}" value="{{field_info.setting.default_value}}" ng-required="field_info.setting.required">
 						    </div>
 					    </div>
 					  	
@@ -96,34 +96,41 @@
 				    <tbody>
 				    	<tr ng-repeat-start="record in user_records[name]">
 				    		<td><label for="{{name}}-{{$index}}" class="show-row-detail btn btn-mini btn-success"><i class="icon-plus"></i></label></td>
-				    		<td ng-repeat="field_info in fields">
+				    		<td ng-init="init_edit_model(record)" ng-repeat="field_info in fields" ng-init="inin_edit_model(record)">
 				    			<div ng-if="!is_field_hidden(field_info.type)">
 				    				<div ng-if="field_info.type=='_field_text_input'">
-					    				{{record[field_info.name]}}
+					    				<span ng-hide="instance_in_edit[record.id]">{{record[field_info.name]}}</span>
+					    				<input ng-show="instance_in_edit[record.id]"class="input-small" type="text" ng-model="model_to_edit[record.id][field_info.name]" ng-required="field_info.setting.required">
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_number_input'">
-					    				{{record[field_info.name]}}
+					    				<span ng-hide="instance_in_edit[record.id]">{{record[field_info.name]}}</span>
+					    				<input ng-show="instance_in_edit[record.id]" class="input-small" type="number" ng-model="model_to_edit[record.id][field_info.name]" max="{{field_info.setting.max_value}}" min="{{field_info.setting.min_value}}" ng-required="field_info.setting.required">
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_rate'">
 					    				<form>
-						    				<fieldset class="rating" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value">
+						    				<fieldset ng-hide="instance_in_edit[record.id]" class="rating" ng-init="current[selected_model][field_info.name]=field_info.setting.default_value">
 									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="{{field_info.name}}-{{record.id}}-{{i}}" name="{{field_info.name}}-{{record.id}}" value="{{i}}" ng-model="record[field_info.name]" disabled/><label ng-repeat-end for="{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
+											</fieldset>
+											<fieldset class="rating" ng-show="instance_in_edit[record.id]">
+									      		<input ng-repeat-start="i in make_range(field_info.setting.max_rate, 1, -1)" type="radio" id="edit-{{field_info.name}}-{{record.id}}-{{i}}" name="edit-{{field_info.name}}-{{record.id}}" value="{{i}}" ng-model="model_to_edit[record.id][field_info.name]"/><label ng-repeat-end for="edit-{{field_info.name}}-{{record.id}}-{{i}}" title="Rocks!">{{i}} stars</label>
 											</fieldset>
 										</form>
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_switch'">
-					    				{{record[field_info.name]}}
-					    				<!-- <label class="switch_wrap" for="{{field_info.name}}-{{record.id}}">
-									  		<input id="{{field_info.name}}-{{record.id}}" type="checkbox" ng-model="record[field_info.name]"/ ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}" disabled>
+					    				<span ng-hide="instance_in_edit[record.id]">{{record[field_info.name]}}</span>
+					    				<label ng-show="instance_in_edit[record.id]" class="switch_wrap" for="{{field_info.name}}-{{record.id}}">
+									  		<input id="{{field_info.name}}-{{record.id}}" type="checkbox" ng-model="model_to_edit[record.id][field_info.name]" ng-true-value="{{field_info.setting.on_value}}" ng-false-value="{{field_info.setting.off_value}}">
 									  		<div class="switch"><span class="bullet"></span></div>
-								  		</label> -->
+								  		</label>
 					    			</div>
 				    			</div>
 				    			<em ng-if="is_field_hidden(field_info.type)">See details</em>
 				    		</td>
 				    		<td class="record-edit">
-				    			<a class="btn btn-small btn-info"><i class="icon-pencil"></i></a>
-				    			<a class="btn btn-small btn-danger" ng-click="del(record,$index)"><i class="icon-remove"></i></a>
+				    			<a class="btn btn-small btn-info" ng-hide="instance_in_edit[record.id]" ng-click="enter_edit(record)"><i class="icon-pencil"></i></a>
+				    			<a class="btn btn-small btn-success" ng-show="instance_in_edit[record.id]" ng-click="submit_edit(record)"><i class="icon-ok"></i></a>
+				    			<a class="btn btn-small btn-warning" ng-show="instance_in_edit[record.id]" ng-click="cancel_edit(record)"><i class="icon-ban-circle"></i></a>
+				    			<a class="btn btn-small btn-danger" ng-hide="instance_in_edit[record.id]" ng-click="del(record,$index)"><i class="icon-remove"></i></a>
 				    		</td>
 				    	</tr>
 				    	<tr ng-repeat-end class="row-detail">
@@ -136,8 +143,21 @@
 					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)!=-1">
 					    						<div ng-if="field_info.type=='_field_image'">
 					    							<label>{{field_info.name}}</label>
-								    				<img ng-src="{{record[field_info.name]}}" />
-									    			
+								    				<img ng-hide="instance_in_edit[record.id]" ng-src="{{record[field_info.name]}}" />
+								    				<div ng-show="instance_in_edit[record.id]">
+										    			<span class="btn btn-file pull-right"> 
+										    				<span class="fileupload-new">Select</span> 
+										    				<input type="file" data-field="{{field_info.name}}" data-uuid="{{record.id}}" onchange="angular.element(this).scope().fileNameChanged()" id=""> 
+										    			</span>
+												    	<a class="btn btn-success" ng-show="model_to_edit[record.id][field_info.name+'_choosed_file_']" ng-click="upload(field_info.name, record.id)">Upload</a>
+												    	<input type="hidden" id="image" ng-model="model_to_edit[record.id][field_info.name]" ng-required="field_info.setting.required">
+												    	<div class="user_listing" ng-if="model_to_edit[record.id][field_info.name+'_uploaded_']"> 
+															<i class="file_thumb" style="background-image:url({{model_to_edit[record.id][field_info.name+'_uploaded_'].thumb}});"></i> 
+															<a href="{{model_to_edit[record.id][field_info.name+'_uploaded_'].link}}">
+																<span class="name">{{model_to_edit[record.id][field_info.name+'_uploaded_'].name}}</span>
+															</a> 
+														</div>
+												    </div>
 								    			</div>
 							    			</div>
 					    				</div>
@@ -145,7 +165,8 @@
 					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)!=-1">
 							    				<div ng-if="field_info.type=='_field_text_area'">
 							    					<label>{{field_info.name}}</label>
-							    					<textarea style="width:97%;" disabled>{{record[field_info.name]}}</textarea>
+							    					<textarea ng-hide="instance_in_edit[record.id]" style="width:97%;" disabled>{{record[field_info.name]}}</textarea>
+							    					<textarea ng-show="instance_in_edit[record.id]" style="width:97%;" ng-model="model_to_edit[record.id][field_info.name]"></textarea>
 								    			</div>
 							    			</div>
 					    				</div>

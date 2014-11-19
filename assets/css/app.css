@@ -7,6 +7,9 @@
 .model-editor .tab-content {
     padding-bottom: 2em;
 }
+.tab-pane td input {
+    margin-bottom: 0;
+}
 .editor-app {
     width: 97%;
     margin: 0 auto;

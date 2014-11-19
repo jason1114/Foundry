@@ -139,33 +139,51 @@
           supported_field_models[field_name] = foundry.load_model(field_name);
         }
         file_module = foundry.load('document');
+        $scope.model_to_edit = {};
+        $scope.instance_in_edit = {};
+        $scope.init_edit_model = function(record) {
+          return $scope.model_to_edit[record.id] = angular.copy(record);
+        };
         $scope.change_selected = function(name) {
           return $scope.selected_model = name;
         };
         $scope.fileNameChanged = function() {
+          var instance, uuid;
           field_name = event.target.dataset.field;
-          $scope.current[$scope.selected_model][field_name + "_choosed_file_"] = event.target.files[0];
+          uuid = event.target.dataset.uuid;
+          instance = uuid ? $scope.model_to_edit[uuid] : $scope.current[$scope.selected_model];
+          instance[field_name + "_choosed_file_"] = event.target.files[0];
           return $scope.$safeApply();
         };
-        $scope.upload = function(field_name) {
-          var spinner;
+        $scope.upload = function(field_name, uuid) {
+          var instance, spinner;
           spinner = $foundry.spinner({
             type: 'loading',
             text: 'Uploading '
           });
-          Nimbus.Binary.upload_file($scope.current[$scope.selected_model][field_name + '_choosed_file_'], function(file) {
+          instance = uuid ? $scope.model_to_edit[uuid] : $scope.current[$scope.selected_model];
+          Nimbus.Binary.upload_file(instance[field_name + '_choosed_file_'], function(file) {
             file_module.set(file._file.id, file._file);
-            $scope.current[$scope.selected_model][field_name + "_uploaded_"] = {
+            instance[field_name + "_uploaded_"] = {
               thumb: file._file.thumbnailLink,
               name: file.name,
               link: file.directlink
             };
-            $scope.current[$scope.selected_model][field_name] = $scope.current[$scope.selected_model][field_name + "_uploaded_"].link;
-            $scope.current[$scope.selected_model][field_name + "_thumb_"] = $scope.current[$scope.selected_model][field_name + "_uploaded_"].thumb;
-            $scope.current[$scope.selected_model][field_name + "_choosed_file_"] = null;
+            instance[field_name] = instance[field_name + "_uploaded_"].link;
+            instance[field_name + "_thumb_"] = instance[field_name + "_uploaded_"].thumb;
+            instance[field_name + "_choosed_file_"] = null;
             spinner.hide();
             return $scope.$safeApply();
           });
+        };
+        $scope.enter_edit = function(record) {
+          return $scope.instance_in_edit[record.id] = true;
+        };
+        $scope.submit_edit = function(record) {
+          return $scope.instance_in_edit[record.id] = false;
+        };
+        $scope.cancel_edit = function(record) {
+          return $scope.instance_in_edit[record.id] = false;
         };
         $scope.add = function() {
           var current_data, data, field_info, field_info_list, is_required, _j, _len1;
