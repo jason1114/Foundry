@@ -129,6 +129,9 @@ define_controller = ()->
 				closeOnCancel: false
 				}, (isConfirm) ->
 				if isConfirm
+					if $scope.generated_models[field.setting.model_belonged_to]
+						swal("Cancelled", "Your can't delete the only field of a model :)", "error")
+						return
 					field.destroy()
 					$scope.load()
 					$scope.$safeApply()

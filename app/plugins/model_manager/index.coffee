@@ -145,7 +145,7 @@ define_controller = ()->
 			$scope.instance_in_edit[record.id] = true
 
 		$scope.submit_edit = (record) ->
-			$scope.model_to_edit[record.id][field_info.name].save()
+			$scope.model_to_edit[record.id].save()
 			$scope.instance_in_edit[record.id] = false
 			$scope.load()
 		$scope.cancel_edit = (record) ->

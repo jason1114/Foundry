@@ -163,7 +163,7 @@
             return $scope.$safeApply();
           });
         };
-        $scope.del_field = function($index, field) {
+        $scope.del_field = function(field) {
           swal({
             title: "Are you sure?",
             text: "The field will be deleted, and the data in this field will gone as well",
@@ -176,6 +176,10 @@
             closeOnCancel: false
           }, function(isConfirm) {});
           if (isConfirm) {
+            if ($scope.generated_models[field.setting.model_belonged_to]) {
+              swal("Cancelled", "Your can't delete the only field of a model :)", "error");
+              return;
+            }
             field.destroy();
             $scope.load();
             $scope.$safeApply();
