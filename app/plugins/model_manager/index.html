@@ -144,8 +144,8 @@
 					    						<div ng-if="field_info.type=='_field_image'">
 					    							<label>{{field_info.name}}</label>
 								    				<img ng-hide="instance_in_edit[record.id]" ng-src="{{record[field_info.name]}}" />
-								    				<div ng-show="instance_in_edit[record.id]" style="padding: 1em">
-										    			<span class="btn btn-file pull-right"> 
+								    				<div ng-show="instance_in_edit[record.id]" style="padding: 1em;text-align: right;">
+										    			<span class="btn btn-file"> 
 										    				<span class="fileupload-new">Select</span> 
 										    				<input type="file" data-field="{{field_info.name}}" data-uuid="{{record.id}}" onchange="angular.element(this).scope().fileNameChanged()" id=""> 
 										    			</span>
