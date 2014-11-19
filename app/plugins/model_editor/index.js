@@ -163,6 +163,27 @@
             return $scope.$safeApply();
           });
         };
+        $scope.del_field = function($index, field) {
+          swal({
+            title: "Are you sure?",
+            text: "The field will be deleted, and the data in this field will gone as well",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel plx!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+          }, function(isConfirm) {});
+          if (isConfirm) {
+            field.destroy();
+            $scope.load();
+            $scope.$safeApply();
+            return swal("Deleted!", "Your model and data has been deleted.", "success");
+          } else {
+            return swal("Cancelled", "Your model and data are safe :)", "error");
+          }
+        };
         $scope.del_model = function(name) {
           return swal({
             title: "Are you sure?",

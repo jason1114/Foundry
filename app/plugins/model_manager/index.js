@@ -180,7 +180,9 @@
           return $scope.instance_in_edit[record.id] = true;
         };
         $scope.submit_edit = function(record) {
-          return $scope.instance_in_edit[record.id] = false;
+          $scope.model_to_edit[record.id][field_info.name].save();
+          $scope.instance_in_edit[record.id] = false;
+          return $scope.load();
         };
         $scope.cancel_edit = function(record) {
           return $scope.instance_in_edit[record.id] = false;
