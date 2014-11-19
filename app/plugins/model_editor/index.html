@@ -314,7 +314,7 @@
 			</div>
 			<!-- show already exits models -->
 			<div class="tab-pane active" ng-if="selected_model==name" ng-repeat="name in tabs" id="model_{{encodeURI(name)}}">
-				<table ng-init="fields=generated_models[name]" class="bordered">
+				<table  class="bordered">
 					<legend>Fields in {{name}}</legend>
 				    <thead>
 					    <tr>
@@ -325,7 +325,7 @@
 					    </tr>
 				    </thead>
 				    <tbody>
-				    	<tr ng-repeat="field in fields">
+				    	<tr ng-repeat="field in generated_models[name]">
 				    		<td>{{field.name}}</td>
 				    		<td>{{supported_field_setting[field.type][0]}}</td>
 				    		<td class="show-setting">

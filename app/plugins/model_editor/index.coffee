@@ -116,8 +116,8 @@ define_controller = ()->
 				$scope.add_tab()
 				$scope.selected_model = $scope.new_model_name
 				$scope.$safeApply()
-		$scope.del_field = ($index, field) ->
-			 swal {   
+		$scope.del_field = (field) ->
+			swal {   
 				title: "Are you sure?",   
 				text: "The field will be deleted, and the data in this field will gone as well",   
 				type: "warning",   
@@ -126,13 +126,13 @@ define_controller = ()->
 				confirmButtonText: "Yes, delete it!",   
 				cancelButtonText: "No, cancel plx!",   
 				closeOnConfirm: false,   
-				closeOnCancel: false
-				}, (isConfirm) ->
+				closeOnCancel: false 
+			}, (isConfirm) ->
 				if isConfirm
-					if $scope.generated_models[field.setting.model_belonged_to]
+					if $scope.generated_models[field.setting.model_belonged_to].length<=1
 						swal("Cancelled", "Your can't delete the only field of a model :)", "error")
 						return
-					field.destroy()
+					field.setting.destroy()
 					$scope.load()
 					$scope.$safeApply()
 					swal("Deleted!", "Your model and data has been deleted.", "success")

@@ -164,7 +164,7 @@
           });
         };
         $scope.del_field = function(field) {
-          swal({
+          return swal({
             title: "Are you sure?",
             text: "The field will be deleted, and the data in this field will gone as well",
             type: "warning",
@@ -174,19 +174,20 @@
             cancelButtonText: "No, cancel plx!",
             closeOnConfirm: false,
             closeOnCancel: false
-          }, function(isConfirm) {});
-          if (isConfirm) {
-            if ($scope.generated_models[field.setting.model_belonged_to]) {
-              swal("Cancelled", "Your can't delete the only field of a model :)", "error");
-              return;
+          }, function(isConfirm) {
+            if (isConfirm) {
+              if ($scope.generated_models[field.setting.model_belonged_to].length <= 1) {
+                swal("Cancelled", "Your can't delete the only field of a model :)", "error");
+                return;
+              }
+              field.setting.destroy();
+              $scope.load();
+              $scope.$safeApply();
+              return swal("Deleted!", "Your model and data has been deleted.", "success");
+            } else {
+              return swal("Cancelled", "Your model and data are safe :)", "error");
             }
-            field.destroy();
-            $scope.load();
-            $scope.$safeApply();
-            return swal("Deleted!", "Your model and data has been deleted.", "success");
-          } else {
-            return swal("Cancelled", "Your model and data are safe :)", "error");
-          }
+          });
         };
         $scope.del_model = function(name) {
           return swal({
