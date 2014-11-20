@@ -160,6 +160,17 @@ define_controller = ()->
 				$scope.add_tab()
 				$scope.selected_model = $scope.new_model_name
 				$scope.$safeApply()
+		
+		$scope.model_edit = {}
+
+		$scope.enter_edit = (field) ->
+			$scope.model_edit[field.id] = angular.copy(field)
+		$scope.cancel_edit = (field) ->
+			delete $scope.model_edit[field.id]
+		$scope.edit_model = (field) ->
+			field.save()
+			$scope.$safeApply()
+			$scope.cancel_edit(field)
 		$scope.del_field = (field) ->
 			swal {   
 				title: "Are you sure?",   
@@ -182,6 +193,7 @@ define_controller = ()->
 					swal("Deleted!", "Your model and data has been deleted.", "success")
 				else
 					swal("Cancelled", "Your model and data are safe :)", "error")
+		
 		$scope.del_model = (name) ->
 			swal {   
 				title: "Are you sure?",   

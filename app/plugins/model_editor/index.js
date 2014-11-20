@@ -212,6 +212,18 @@
             return $scope.$safeApply();
           });
         };
+        $scope.model_edit = {};
+        $scope.enter_edit = function(field) {
+          return $scope.model_edit[field.id] = angular.copy(field);
+        };
+        $scope.cancel_edit = function(field) {
+          return delete $scope.model_edit[field.id];
+        };
+        $scope.edit_model = function(field) {
+          field.save();
+          $scope.$safeApply();
+          return $scope.cancel_edit(field);
+        };
         $scope.del_field = function(field) {
           return swal({
             title: "Are you sure?",

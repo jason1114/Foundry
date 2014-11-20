@@ -262,11 +262,11 @@
 											</td>
 											<td>
 												<label>Max Value</label>
-												<input type="number" class="input-small" ng-model=".$parent.field.setting.max_value" disabled>
+												<input type="number" class="input-small" ng-model="$parent.field.setting.max_value" disabled>
 											</td>
 											<td>
 												<label>Min Value</label>
-												<input type="number" class="input-small" ng-model=".$parent.field.setting.min_value" disabled>
+												<input type="number" class="input-small" ng-model="$parent.field.setting.min_value" disabled>
 											</td>
 											<td>
 												<label>Required</label>
@@ -311,7 +311,7 @@
 					        <th>Field Name</th>        
 					        <th>Field Type</th>
 					        <th>Field Setting</th>
-					        <th>Actions</th>
+					        <th style="width: 5em;text-align: center;">Actions</th>
 					    </tr>
 				    </thead>
 				    <tbody>
@@ -327,123 +327,221 @@
 				    		</td>
 				    		<td>{{supported_field_setting[field.type][0]}}</td>
 				    		<td class="show-setting">
-				    			<div ng-if="field.type=='_field_switch'" class="">
-									<table >
-										<tr>
-											<td>
-												<label>"On" Value</label>
-												<input type="text" class="input-small" ng-model="$parent.field.setting.on_value" disabled>
-											</td>
-											<td>
-												<label>"Off" Value</label>
-												<input type="text" class="input-small" ng-model="$parent.field.setting.off_value" disabled>
-											</td>
-											<td>
-												<label>Default Value</label>
-											  	<label class="switch_wrap" for="switch-default-value-new-model-{{$parent.field.name}}">
-											  		<input id="switch-default-value-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.default_value"/ disabled>
-											  		<div class="switch"><span class="bullet"></span></div>
-										  		</label>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div ng-if="field.type=='_field_text_input'" class="">
-									<table >
-										<tr>
-											<td>
-												<label>Default Value</label>
-											  	<input type="text" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
-											</td>
-											<td>
-												<label>Required</label>
-												<label class="switch_wrap" for="text-input-required-new-model-{{$parent.field.name}}">
-											  		<input id="text-input-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
-											  		<div class="switch"><span class="bullet"></span></div>
-										  		</label>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div ng-if="field.type=='_field_text_area'" class="">
-									<table >
-										<tr>
-											<td>
-												<label>Default Value</label>
-											  	<input type="text" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
-											</td>
-											<td>
-												<label>Required</label>
-												<label class="switch_wrap" for="text-area-required-new-model-{{$parent.field.name}}">
-											  		<input id="text-area-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
-											  		<div class="switch"><span class="bullet"></span></div>
-										  		</label>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div ng-if="field.type=='_field_rate'" class="">
-									<table >
-										<tr>
-											<td>
-												<label>Default Value</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
-											</td>
-											<td>
-												<label>Max Rate</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.max_rate" disabled>
-											</td>
-											<td>
-												<label>Required</label>
-											  	<label class="switch_wrap" for="rate-required-new-model-{{$parent.field.name}}">
-											  		<input id="rate-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
-											  		<div class="switch"><span class="bullet"></span></div>
-										  		</label>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div ng-if="field.type=='_field_number_input'" class="">
-									<table >
-										<tr>
-											<td>
-												<label>Default Value</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
-											</td>
-											<td>
-												<label>Max Value</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.max_value" disabled>
-											</td>
-											<td>
-												<label>Min Value</label>
-												<input type="number" class="input-small" ng-model="$parent.field.setting.min_value" disabled>
-											</td>
-											<td>
-												<label>Required</label>
-											  	<label class="switch_wrap" for="number-input-required-new-model-{{$parent.field.name}}">
-											  		<input id="number-input-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
-											  		<div class="switch"><span class="bullet"></span></div>
-										  		</label>
-											</td>
-										</tr>
-									</table>
-								</div>
-								<div ng-if="field.type=='_field_image'" class="">
-									<table >
-										<tr>
-											<td>
-												<label>Required</label>
-												<label class="switch_wrap" for="image-required-new-model-{{$parent.field.name}}">
-											  		<input id="image-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
-											  		<div class="switch"><span class="bullet"></span></div>
-										  		</label>
-											</td>
-										</tr>
-									</table>
-								</div>
+				    			<form ng-submit="edit_model(model_edit[field.setting.id])">
+					    			<div ng-if="field.type=='_field_switch'" class="">
+										<table >
+											<tr ng-hide="model_edit[field.setting.id]">
+												<td>
+													<label>"On" Value</label>
+													<input type="text" class="input-small" ng-model="$parent.field.setting.on_value" disabled>
+												</td>
+												<td>
+													<label>"Off" Value</label>
+													<input type="text" class="input-small" ng-model="$parent.field.setting.off_value" disabled>
+												</td>
+												<td>
+													<label>Default Value</label>
+												  	<label class="switch_wrap" for="switch-default-value-new-model-{{$parent.field.name}}">
+												  		<input id="switch-default-value-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.default_value"/ disabled>
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+											<tr ng-show="model_edit[field.setting.id]">
+												<td>
+													<label>"On" Value</label>
+													<input type="text" class="input-small" ng-model="$parent.model_edit[field.setting.id].on_value" >
+												</td>
+												<td>
+													<label>"Off" Value</label>
+													<input type="text" class="input-small" ng-model="$parent.model_edit[field.setting.id].off_value" >
+												</td>
+												<td>
+													<label>Default Value</label>
+												  	<label class="switch_wrap" for="edit-switch-default-value-new-model-{{$parent.field.name}}">
+												  		<input id="edit-switch-default-value-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.model_edit[field.setting.id].default_value"/ >
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div ng-if="field.type=='_field_text_input'" class="">
+										<table >
+											<tr ng-hide="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+												  	<input type="text" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
+												</td>
+												<td>
+													<label>Required</label>
+													<label class="switch_wrap" for="text-input-required-new-model-{{$parent.field.name}}">
+												  		<input id="text-input-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+											<tr ng-show="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+												  	<input type="text" class="input-small" ng-model="$parent.model_edit[field.setting.id].default_value" >
+												</td>
+												<td>
+													<label>Required</label>
+													<label class="switch_wrap" for="edit-text-input-required-new-model-{{$parent.field.name}}">
+												  		<input id="edit-text-input-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.model_edit[field.setting.id].required" >
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div ng-if="field.type=='_field_text_area'" class="">
+										<table >
+											<tr ng-hide="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+												  	<input type="text" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
+												</td>
+												<td>
+													<label>Required</label>
+													<label class="switch_wrap" for="text-area-required-new-model-{{$parent.field.name}}">
+												  		<input id="text-area-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+											<tr ng-show="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+												  	<input type="text" class="input-small" ng-model="$parent.model_edit[field.setting.id].default_value" >
+												</td>
+												<td>
+													<label>Required</label>
+													<label class="switch_wrap" for="edit-text-area-required-new-model-{{$parent.field.name}}">
+												  		<input id="edit-text-area-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.model_edit[field.setting.id].required">
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div ng-if="field.type=='_field_rate'" class="">
+										<table >
+											<tr ng-hide="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+													<input type="number" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
+												</td>
+												<td>
+													<label>Max Rate</label>
+													<input type="number" class="input-small" ng-model="$parent.field.setting.max_rate" disabled>
+												</td>
+												<td>
+													<label>Required</label>
+												  	<label class="switch_wrap" for="rate-required-new-model-{{$parent.field.name}}">
+												  		<input id="rate-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+											<tr ng-show="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+													<input type="number" class="input-small" ng-model="$parent.model_edit[field.setting.id].default_value" >
+												</td>
+												<td>
+													<label>Max Rate</label>
+													<input type="number" class="input-small" ng-model="$parent.model_edit[field.setting.id].max_rate" >
+												</td>
+												<td>
+													<label>Required</label>
+												  	<label class="switch_wrap" for="edit-rate-required-new-model-{{$parent.field.name}}">
+												  		<input id="edit-rate-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.model_edit[field.setting.id].required"/ >
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div ng-if="field.type=='_field_number_input'" class="">
+										<table >
+											<tr ng-hide="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+													<input type="number" class="input-small" ng-model="$parent.field.setting.default_value" disabled>
+												</td>
+												<td>
+													<label>Max Value</label>
+													<input type="number" class="input-small" ng-model="$parent.field.setting.max_value" disabled>
+												</td>
+												<td>
+													<label>Min Value</label>
+													<input type="number" class="input-small" ng-model="$parent.field.setting.min_value" disabled>
+												</td>
+												<td>
+													<label>Required</label>
+												  	<label class="switch_wrap" for="number-input-required-new-model-{{$parent.field.name}}">
+												  		<input id="number-input-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+											<tr ng-show="model_edit[field.setting.id]">
+												<td>
+													<label>Default Value</label>
+													<input type="number" class="input-small" ng-model="$parent.model_edit[field.setting.id].default_value">
+												</td>
+												<td>
+													<label>Max Value</label>
+													<input type="number" class="input-small" ng-model="$parent.model_edit[field.setting.id].max_value">
+												</td>
+												<td>
+													<label>Min Value</label>
+													<input type="number" class="input-small" ng-model="$parent.model_edit[field.setting.id].min_value">
+												</td>
+												<td>
+													<label>Required</label>
+												  	<label class="switch_wrap" for="edit-number-input-required-new-model-{{$parent.field.name}}">
+												  		<input id="edit-number-input-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.model_edit[field.setting.id].required">
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div ng-if="field.type=='_field_image'" class="">
+										<table >
+											<tr ng-hide="model_edit[field.setting.id]">
+												<td>
+													<label>Required</label>
+													<label class="switch_wrap" for="image-required-new-model-{{$parent.field.name}}">
+												  		<input id="image-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.field.setting.required"/ disabled>
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+											<tr ng-show="model_edit[field.setting.id]">
+												<td>
+													<label>Required</label>
+													<label class="switch_wrap" for="edit-image-required-new-model-{{$parent.field.name}}">
+												  		<input id="edit-image-required-new-model-{{$parent.field.name}}" type="checkbox" ng-model="$parent.model_edit[field.setting.id].required">
+												  		<div class="switch"><span class="bullet"></span></div>
+											  		</label>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<input type="submit" style="display:none;" id="edit-{{field.setting.id}}">
+								</form>
 				    		</td>
 				    		<td>
-				    			<button class="btn btn-danger btn-small" ng-click="del_field(field)"><i class="icon-remove"></i></button>
+				    			<span class="pull-right">
+				    				<a class="btn btn-info btn-small" ng-hide="model_edit[field.setting.id]" ng-click="enter_edit(field.setting)"><i class="icon-pencil"></i></a>
+					    			<button class="btn btn-danger btn-small" ng-hide="model_edit[field.setting.id]" ng-click="del_field(field.setting)"><i class="icon-remove"></i></button>
+					    			<label for="edit-{{field.setting.id}}" class="btn btn-small btn-success" ng-show="model_edit[field.setting.id]"><i class="icon-ok"></i></label>
+					    			<a class="btn btn-small btn-warning" ng-show="model_edit[field.setting.id]" ng-click="cancel_edit(field.setting)"><i class="icon-ban-circle"></i></a>
+					    		</span>
 				    		</td>
 				    	</tr>
 					</tbody>
