@@ -107,11 +107,11 @@
           field_name = _ref[_i];
           supported_field_models[field_name] = foundry.load_model(field_name);
         }
-        $scope.push_field_to_new_model = function(type) {
-          var field, setting, to_push, _j, _len1, _ref1;
-          _ref1 = $scope.fields_in_new_model;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            field = _ref1[_j];
+        $scope.push_field_to_model = function(type) {
+          var field, field_model, field_to_create, setting, target, to_push, _j, _len1;
+          target = $scope.selected_model ? $scope.generated_models[$scope.selected_model] : $scope.fields_in_new_model;
+          for (_j = 0, _len1 = target.length; _j < _len1; _j++) {
+            field = target[_j];
             if (field.name === $scope.field_name_to_add) {
               sweetAlert("Oops...", "Field name " + field.name + " already exists.", "error");
               return;
@@ -129,10 +129,59 @@
             return setting[attr] = $scope[s];
           });
           to_push.setting = setting;
-          return $scope.fields_in_new_model.push(to_push);
+          if ($scope.selected_model) {
+            field_to_create = angular.copy(setting);
+            field_to_create.model_belonged_to = $scope.selected_model;
+            field_to_create.field_name = to_push.name;
+            field_model = supported_field_models[to_push.type];
+            field_model.create(field_to_create);
+            return $scope.load();
+          } else {
+            return $scope.fields_in_new_model.push(to_push);
+          }
         };
         $scope.delete_field_from_new_model = function(index) {
           return $scope.fields_in_new_model.splice(index, 1);
+        };
+        $scope.model_rename = {};
+        $scope.in_rename = {};
+        $scope.enter_rename = function(field_info) {
+          $scope.in_rename[field_info.setting.id] = true;
+          return $scope.model_rename[field_info.setting.id] = field_info.setting.field_name;
+        };
+        $scope.cancel_rename = function(field_info) {
+          $scope.in_rename[field_info.setting.id] = false;
+          return delete $scope.model_rename[field_info.setting.id];
+        };
+        $scope.rename_field = function(field_info) {
+          var new_field_name, new_fields, old_fields;
+          old_fields = $scope.generated_models[field_info.setting.model_belonged_to].map(function(field_info) {
+            return field_info.name;
+          });
+          new_field_name = $scope.model_rename[field_info.setting.id];
+          if (!new_field_name) {
+            sweetAlert("Oops...", "New field name can't be empty.", "error");
+            return;
+          }
+          if (old_fields.indexOf(new_field_name) !== -1) {
+            sweetAlert("Oops...", "Fild name " + new_field_name + " already exists.", "error");
+            return;
+          }
+          new_fields = old_fields.concat(new_field_name);
+          return foundry.model(field_info.setting.model_belonged_to, new_fields, function(new_user_model) {
+            var record, _j, _len1, _ref1;
+            _ref1 = new_user_model.all();
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              record = _ref1[_j];
+              record[new_field_name] = record[field_info.name];
+              record.save();
+            }
+            field_info.setting.field_name = new_field_name;
+            field_info.setting.save();
+            $scope.load();
+            $scope.$safeApply();
+            return $scope.cancel_rename(field_info);
+          });
         };
         $scope.add_model = function() {
           var model, name, _ref1;

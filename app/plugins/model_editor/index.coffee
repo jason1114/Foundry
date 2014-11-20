@@ -78,8 +78,9 @@ define_controller = ()->
 		for field_name in Object.keys(supported_field)
 			supported_field_models[field_name] = foundry.load_model(field_name) 
 
-		$scope.push_field_to_new_model = (type) ->
-			for field in $scope.fields_in_new_model
+		$scope.push_field_to_model = (type) ->
+			target = if $scope.selected_model then $scope.generated_models[$scope.selected_model] else $scope.fields_in_new_model
+			for field in target
 				if field.name is $scope.field_name_to_add
 					sweetAlert("Oops...", "Field name #{field.name} already exists.", "error");
 					return;
@@ -93,11 +94,54 @@ define_controller = ()->
 				s = "#{type}_#{attr}"
 				setting[attr] = $scope[s]
 			to_push.setting = setting
-			$scope.fields_in_new_model.push(to_push)
+			if $scope.selected_model
+				field_to_create = angular.copy(setting)
+				field_to_create.model_belonged_to = $scope.selected_model
+				field_to_create.field_name = to_push.name
+				field_model = supported_field_models[to_push.type]
+				field_model.create(field_to_create)
+				$scope.load()
+			else 
+				$scope.fields_in_new_model.push(to_push)
 		
 		$scope.delete_field_from_new_model = (index) ->
 			$scope.fields_in_new_model.splice(index, 1)	
-
+		
+		$scope.model_rename = {}
+		$scope.in_rename = {}
+		$scope.enter_rename = (field_info) ->
+			$scope.in_rename[field_info.setting.id] = true
+			$scope.model_rename[field_info.setting.id] = field_info.setting.field_name
+		
+		$scope.cancel_rename = (field_info) ->
+			$scope.in_rename[field_info.setting.id] = false
+			delete $scope.model_rename[field_info.setting.id]
+		
+		$scope.rename_field = (field_info) ->
+			old_fields = $scope.generated_models[field_info.setting.model_belonged_to].map (field_info) -> 
+				field_info.name
+			new_field_name = $scope.model_rename[field_info.setting.id]
+			# check whether name is legal
+			if !new_field_name
+				sweetAlert("Oops...", "New field name can't be empty.", "error");
+				return
+			if old_fields.indexOf(new_field_name) isnt -1
+				sweetAlert("Oops...", "Fild name #{new_field_name} already exists.", "error");
+				return
+			# create a new field in the user model
+			new_fields = old_fields.concat new_field_name
+			foundry.model field_info.setting.model_belonged_to, new_fields, (new_user_model) ->
+				# assign the old value to the new field
+				for record in new_user_model.all()
+					record[new_field_name] = record[field_info.name] 
+					record.save()
+				# rename the old field
+				field_info.setting.field_name = new_field_name
+				field_info.setting.save()
+				$scope.load()
+				$scope.$safeApply()
+				$scope.cancel_rename(field_info)
+			
 		$scope.add_model = () ->
 			for name, model of foundry._models
 				if name is $scope.new_model_name

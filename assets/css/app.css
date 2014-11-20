@@ -104,6 +104,9 @@ tr.row-detail td {
 .model-editor button.close {
   margin-left: 8px;
 }
+td label.switch_wrap {
+  margin-top: 5px;
+}
 /* for table*/
 table {
     *border-collapse: collapse; /* IE7 and lower */
