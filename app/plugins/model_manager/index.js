@@ -13,7 +13,7 @@
     return user_plugin = {
       name: 'model_manager',
       anchor: '#/model_manager',
-      title: 'Model Management',
+      title: 'SimpleBase',
       type: 'plugin',
       icon: 'icon-list',
       init: function() {
@@ -145,7 +145,8 @@
           return $scope.model_to_edit[record.id] = angular.copy(record);
         };
         $scope.change_selected = function(name) {
-          return $scope.selected_model = name;
+          $scope.selected_model = name;
+          return $scope.reset_pagination();
         };
         $scope.fileNameChanged = function() {
           var instance, uuid;
@@ -202,7 +203,8 @@
             }
           }
           $scope.user_models[$scope.selected_model].create(data);
-          return $scope.load();
+          $scope.load();
+          return $scope.recalculate_total();
         };
         $scope.del = function(record, $index) {
           return swal({
@@ -220,6 +222,7 @@
               record.destroy();
               $scope.user_records[$scope.selected_model].splice($index, 1);
               $scope.$safeApply();
+              $scope.recalculate_total();
               return swal("Deleted!", "The record has been deleted.", "success");
             } else {
               return swal("Cancelled", "Your data is safe :)", "error");
@@ -249,6 +252,48 @@
             }
           }
           return _results;
+        };
+        $scope.page_size = 10;
+        $scope.reset_pagination = function() {
+          $scope.current_page = 1;
+          if ($scope.selected_model && $scope.user_records[$scope.selected_model]) {
+            return $scope.recalculate_total();
+          } else {
+            return $scope.total_page = 1;
+          }
+        };
+        $scope.recalculate_total = function() {
+          $scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length / +$scope.page_size);
+          if ($scope.total_page === 0) {
+            $scope.total_page++;
+          }
+          if ($scope.current_page > $scope.total_page) {
+            return $scope.current_page = $scope.total_page;
+          }
+        };
+        $scope.go_page = function() {
+          if ($scope.page_to_go > 0 && $scope.page_to_go <= $scope.total_page) {
+            return $scope.current_page = $scope.page_to_go;
+          }
+        };
+        $scope.next_page = function() {
+          if ($scope.current_page < $scope.total_page) {
+            return $scope.current_page++;
+          }
+        };
+        $scope.previous_page = function() {
+          if ($scope.current_page > 1) {
+            return $scope.current_page--;
+          }
+        };
+        $scope.change_page_size = function() {
+          return $scope.reset_pagination();
+        };
+        $scope.paginate = function(records) {
+          var end, start;
+          start = ($scope.current_page - 1) * (+$scope.page_size);
+          end = start + (+$scope.page_size);
+          return records.slice(start, end);
         };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
@@ -296,7 +341,8 @@
           }
           return _results;
         };
-        return $scope.load();
+        $scope.load();
+        return $scope.reset_pagination();
       }
     ]);
   };

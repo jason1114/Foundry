@@ -7,7 +7,7 @@ define('model_manager', ()->
 	user_plugin = 	
 		name : 'model_manager'
 		anchor : '#/model_manager'
-		title : 'Model Management'
+		title : 'SimpleBase'
 		type : 'plugin'
 		icon : 'icon-list'
 		# initialize plugin,
@@ -110,6 +110,7 @@ define_controller = ()->
 			$scope.model_to_edit[record.id] = angular.copy(record)
 		$scope.change_selected = (name) ->
 			$scope.selected_model = name
+			$scope.reset_pagination()
 		# TODO multi image field upload
 		$scope.fileNameChanged = () ->
 			field_name = event.target.dataset.field
@@ -163,6 +164,7 @@ define_controller = ()->
 					data[field_info.name] = current_data[field_info.name]
 			$scope.user_models[$scope.selected_model].create(data)
 			$scope.load()
+			$scope.recalculate_total()
 		$scope.del = (record, $index) ->
 			swal {   
 				title: "Are you sure?",   
@@ -179,6 +181,7 @@ define_controller = ()->
 					record.destroy()
 					$scope.user_records[$scope.selected_model].splice($index, 1)
 					$scope.$safeApply()
+					$scope.recalculate_total()
 					swal("Deleted!", "The record has been deleted.", "success")
 				else
 					swal("Cancelled", "Your data is safe :)", "error")
@@ -196,6 +199,31 @@ define_controller = ()->
 					else 
 						current_data[field_info.name] = field_info.setting.default_value
 
+		# for pagination
+		$scope.page_size = 10
+		$scope.reset_pagination = () ->
+			$scope.current_page = 1
+			if $scope.selected_model and $scope.user_records[$scope.selected_model]
+				$scope.recalculate_total()
+			else
+				$scope.total_page = 1
+		$scope.recalculate_total = () ->
+			$scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length/+($scope.page_size))
+			$scope.total_page++ if $scope.total_page is 0
+			$scope.current_page = $scope.total_page if $scope.current_page>$scope.total_page
+		$scope.go_page = () ->
+			if $scope.page_to_go>0 and $scope.page_to_go<= $scope.total_page
+				$scope.current_page = $scope.page_to_go
+		$scope.next_page = () ->
+			$scope.current_page++ if $scope.current_page<$scope.total_page
+		$scope.previous_page = () ->
+			$scope.current_page-- if $scope.current_page>1
+		$scope.change_page_size = () ->
+			$scope.reset_pagination()
+		$scope.paginate = (records) ->
+			start = ($scope.current_page-1)*(+$scope.page_size)
+			end = start + (+$scope.page_size)
+			records.slice(start, end)
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models
@@ -222,4 +250,5 @@ define_controller = ()->
 							$scope.selected_model = $scope.tabs[0]
 			$scope.current[name] = {} for name in Object.keys($scope.generated_models)
 		$scope.load()
+		$scope.reset_pagination()
 	])

@@ -1,6 +1,6 @@
 <div ng-controller="ModelController">
 	<div class="breadcrumb">
-	    <h1>Model Management</h1>
+	    <h1>SimpleBase</h1>
 	    <select ng-model="tab_to_add" ng-change="add_tab()" class="model-selector">
 	    	<option>{{choose_a_model}}</option>
 	    	<option ng-repeat="(name, fields) in generated_models">{{name}}</option>
@@ -85,6 +85,27 @@
 		<!-- model instance table -->
 		<div class="tab-content">
 			<div class="tab-pane {{selected_model==name?'active':''}}" ng-if="selected_model==name" ng-repeat="name in tabs" id="model_{{encodeURI(name)}}">
+				<div>
+					<form ng-submit="go_page()" class="form-inline" style="position:relative; margin-bottom:10px;">
+						<select ng-change="change_page_size()" ng-model="$parent.$parent.$parent.page_size" class="input-small">
+							<option>10</option>
+							<option>25</option>
+							<option>50</option>
+							<option>100</option>
+						</select>
+						<span style="position: absolute; right:12em;">
+							<input ng-model="$parent.$parent.$parent.page_to_go" type="number" min="1" class="input-mini">
+							<button class="btn">Go</button>
+							<span style="margin-left:1em;">{{current_page}}/{{total_page}}</span>
+						</span>
+						<ul class="pager" style="position:absolute; top:0; right:0; margin-top:0;">
+						  <li><a ng-click="previous_page()">Previous</a></li>
+						  <li><a ng-click="next_page()">Next</a></li>
+						</ul>
+						
+
+					</form>
+				</div>
 				<table ng-init="fields=generated_models[name]" class="bordered">
 				    <thead>
 					    <tr>
@@ -94,7 +115,7 @@
 					    </tr>
 				    </thead>
 				    <tbody>
-				    	<tr ng-repeat-start="record in user_records[name]">
+				    	<tr ng-repeat-start="record in paginate(user_records[name])">
 				    		<td><label for="{{name}}-{{$index}}" class="show-row-detail btn btn-mini btn-success"><i class="icon-plus"></i></label></td>
 				    		<td ng-init="init_edit_model(record)" ng-repeat="field_info in fields" ng-init="inin_edit_model(record)">
 				    			<div ng-if="!is_field_hidden(field_info.type)">
@@ -143,7 +164,7 @@
 					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_left.indexOf(field_info.type)!=-1">
 					    						<div ng-if="field_info.type=='_field_image'">
 					    							<label>{{field_info.name}}</label>
-								    				<img ng-hide="instance_in_edit[record.id]" ng-src="{{record[field_info.name]}}" />
+								    				<img ng-hide="model_to_edit[record.id][field_info.name+'_uploaded_']" ng-src="{{record[field_info.name]}}" />
 								    				<div ng-show="instance_in_edit[record.id]" style="padding: 1em;text-align: right;">
 										    			<span class="btn btn-file"> 
 										    				<span class="fileupload-new">Select</span> 

@@ -1,6 +1,6 @@
 <div ng-controller="ModelEditorController">
 	<div class="breadcrumb">
-	    <h1>Model Editor</h1>
+	    <h1>Configuration</h1>
 	    <select ng-model="tab_to_add" ng-change="add_tab()" class="model-selector">
 	    	<option>{{choose_a_model}}</option>
 	    	<option ng-repeat="(name, fields) in generated_models">{{name}}</option>

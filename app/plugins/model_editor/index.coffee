@@ -5,7 +5,7 @@ define('model_editor', ()->
 	user_plugin = 	
 		name : 'model_editor'
 		anchor : '#/model_editor'
-		title : 'Model Editor'
+		title : 'Configuration'
 		type : 'plugin'
 		icon : 'icon-pencil'
 		# initialize plugin,
