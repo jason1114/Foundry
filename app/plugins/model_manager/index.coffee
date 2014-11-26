@@ -169,7 +169,7 @@ define_controller = ()->
 			$scope.user_models[$scope.selected_model].create(data)
 			$scope.load()
 			# $scope.recalculate_total()
-		$scope.del = (record, $index) ->
+		$scope.del = (record) ->
 			swal {   
 				title: "Are you sure?",   
 				text: "This record will be deleted and it can't be recovered!",   
@@ -183,7 +183,8 @@ define_controller = ()->
 			}, (isConfirm) ->
 				if isConfirm
 					record.destroy()
-					$scope.user_records[$scope.selected_model].splice($index, 1)
+					$scope.load()
+					# $scope.user_records[$scope.selected_model].splice($index, 1)
 					$scope.$safeApply()
 					# $scope.recalculate_total()
 					swal("Deleted!", "The record has been deleted.", "success")

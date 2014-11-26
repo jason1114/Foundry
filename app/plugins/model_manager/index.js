@@ -209,7 +209,7 @@
           $scope.user_models[$scope.selected_model].create(data);
           return $scope.load();
         };
-        $scope.del = function(record, $index) {
+        $scope.del = function(record) {
           return swal({
             title: "Are you sure?",
             text: "This record will be deleted and it can't be recovered!",
@@ -223,7 +223,7 @@
           }, function(isConfirm) {
             if (isConfirm) {
               record.destroy();
-              $scope.user_records[$scope.selected_model].splice($index, 1);
+              $scope.load();
               $scope.$safeApply();
               return swal("Deleted!", "The record has been deleted.", "success");
             } else {
