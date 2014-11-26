@@ -148,7 +148,9 @@
           $scope.selected_model = name;
           $scope.reset_pagination();
           delete $scope.keyword;
-          return delete $scope.keyword_to_search;
+          delete $scope.keyword_to_search;
+          delete $scope.field_to_order;
+          return delete $scope.order;
         };
         $scope.fileNameChanged = function() {
           var instance, uuid;
@@ -255,6 +257,22 @@
         };
         $scope.field_to_order = void 0;
         $scope.order = void 0;
+        $scope.is_sort = function(field_name, order) {
+          if (field_name === $scope.field_to_order && $scope.order === order) {
+            return true;
+          } else {
+            return false;
+          }
+        };
+        $scope.set_sort = function(field_name, order) {
+          if (field_name === $scope.field_to_order && $scope.order === order) {
+            delete $scope.field_to_order;
+            return delete $scope.order;
+          } else {
+            $scope.field_to_order = field_name;
+            return $scope.order = order;
+          }
+        };
         $scope.keyword = void 0;
         $scope.search = function() {
           $scope.keyword = $scope.keyword_to_search;

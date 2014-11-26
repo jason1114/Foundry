@@ -113,6 +113,8 @@ define_controller = ()->
 			$scope.reset_pagination()
 			delete $scope.keyword
 			delete $scope.keyword_to_search
+			delete $scope.field_to_order
+			delete $scope.order
 		# TODO multi image field upload
 		$scope.fileNameChanged = () ->
 			field_name = event.target.dataset.field
@@ -202,7 +204,20 @@ define_controller = ()->
 						current_data[field_info.name] = field_info.setting.default_value
 		# for order
 		$scope.field_to_order = undefined
+		# true for DESC , false for ASC
 		$scope.order = undefined
+		$scope.is_sort = (field_name, order) ->
+			if field_name is $scope.field_to_order and $scope.order is order
+				return true
+			else
+				return false
+		$scope.set_sort = (field_name, order) ->
+			if field_name is $scope.field_to_order and $scope.order is order
+				delete $scope.field_to_order
+				delete $scope.order
+			else
+				$scope.field_to_order = field_name
+				$scope.order = order
 		# for search
 		$scope.keyword = undefined
 		$scope.search = () ->

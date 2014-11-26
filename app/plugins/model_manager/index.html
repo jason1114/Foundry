@@ -116,7 +116,11 @@
 				    <thead>
 					    <tr>
 					    	<th style="width: 10px;text-align: center;">*</th>
-					        <th ng-repeat="field_info in fields" >{{field_info.name}}</th>
+					        <th ng-repeat="field_info in fields" >
+					        	{{field_info.name}} 
+					        	<i class="icon-arrow-up" ng-class="{'icon-white': !is_sort(field_info.name, false)}" ng-click="set_sort(field_info.name, false)"></i>
+					        	<i class="icon-arrow-down" ng-class="{'icon-white': !is_sort(field_info.name, true)}" ng-click="set_sort(field_info.name, true)"></i>
+					        </th>
 					        <th>Actions</th>
 					    </tr>
 				    </thead>

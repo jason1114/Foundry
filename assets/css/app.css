@@ -21,6 +21,9 @@
     margin-left: 2em;
     margin-right: 2em;
 }
+.model-editor .icon-white:before {
+    color: white;
+}
 .add-field .switch_wrap {
   margin-top: 9px;
 }
