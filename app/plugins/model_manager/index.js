@@ -146,7 +146,9 @@
         };
         $scope.change_selected = function(name) {
           $scope.selected_model = name;
-          return $scope.reset_pagination();
+          $scope.reset_pagination();
+          delete $scope.keyword;
+          return delete $scope.keyword_to_search;
         };
         $scope.fileNameChanged = function() {
           var instance, uuid;
@@ -255,28 +257,12 @@
         $scope.order = void 0;
         $scope.keyword = void 0;
         $scope.search = function() {
-          if ($scope.keyword_to_search) {
-            $scope.keyword = $scope.keyword_to_search;
-            return $scope.current_page = 1;
-          }
+          $scope.keyword = $scope.keyword_to_search;
+          return $scope.current_page = 1;
         };
         $scope.page_size = 10;
         $scope.reset_pagination = function() {
-          $scope.current_page = 1;
-          if ($scope.selected_model && $scope.user_records[$scope.selected_model]) {
-            return $scope.recalculate_total();
-          } else {
-            return $scope.total_page = 1;
-          }
-        };
-        $scope.recalculate_total = function() {
-          $scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length / +$scope.page_size);
-          if ($scope.total_page === 0) {
-            $scope.total_page++;
-          }
-          if ($scope.current_page > $scope.total_page) {
-            return $scope.current_page = $scope.total_page;
-          }
+          return $scope.current_page = 1;
         };
         $scope.go_page = function() {
           if ($scope.page_to_go > 0 && $scope.page_to_go <= $scope.total_page) {
@@ -297,15 +283,37 @@
           return $scope.reset_pagination();
         };
         $scope.paginate = function(records) {
-          var end, results, start;
+          var end, expected, fields, results, start;
           results = records;
           if ($scope.keyword) {
-            results = $filter('filter')(records, $scope.keyword);
+            fields = $scope.generated_models[$scope.selected_model];
+            expected = $scope.keyword;
+            results = records.filter(function(actual) {
+              var field_info, field_value, idx, _j, _len1;
+              for (_j = 0, _len1 = fields.length; _j < _len1; _j++) {
+                field_info = fields[_j];
+                field_value = actual[field_info.name];
+                if (field_value === null || typeof field_value === 'undefined') {
+                  continue;
+                } else {
+                  idx = ("" + field_value).toLowerCase().indexOf(expected.toLowerCase());
+                  if (idx === -1) {
+                    continue;
+                  } else {
+                    return true;
+                  }
+                }
+              }
+              return false;
+            });
           }
           if ($scope.field_to_order) {
             results = $filter('orderBy')(results, $scope.field_to_order, $scope.order);
           }
-          $scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length / +$scope.page_size);
+          $scope.total_page = Math.ceil(results.length / +$scope.page_size);
+          if ($scope.total_page === 0) {
+            $scope.total_page = 1;
+          }
           if ($scope.current_page > $scope.total_page) {
             $scope.current_page = $scope.total_page;
           }

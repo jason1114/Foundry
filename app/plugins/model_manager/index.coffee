@@ -111,6 +111,8 @@ define_controller = ()->
 		$scope.change_selected = (name) ->
 			$scope.selected_model = name
 			$scope.reset_pagination()
+			delete $scope.keyword
+			delete $scope.keyword_to_search
 		# TODO multi image field upload
 		$scope.fileNameChanged = () ->
 			field_name = event.target.dataset.field
@@ -204,21 +206,16 @@ define_controller = ()->
 		# for search
 		$scope.keyword = undefined
 		$scope.search = () ->
-			if $scope.keyword_to_search
-				$scope.keyword = $scope.keyword_to_search
-				$scope.current_page = 1
+			$scope.keyword = $scope.keyword_to_search
+			$scope.current_page = 1
 		# for pagination
 		$scope.page_size = 10
 		$scope.reset_pagination = () ->
 			$scope.current_page = 1
-			if $scope.selected_model and $scope.user_records[$scope.selected_model]
-				$scope.recalculate_total()
-			else
-				$scope.total_page = 1
-		$scope.recalculate_total = () ->
-			$scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length/+($scope.page_size))
-			$scope.total_page++ if $scope.total_page is 0
-			$scope.current_page = $scope.total_page if $scope.current_page>$scope.total_page
+		# $scope.recalculate_total = () ->
+		# 	$scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length/+($scope.page_size))
+		# 	$scope.total_page++ if $scope.total_page is 0
+		# 	$scope.current_page = $scope.total_page if $scope.current_page>$scope.total_page
 		$scope.go_page = () ->
 			if $scope.page_to_go>0 and $scope.page_to_go<= $scope.total_page
 				$scope.current_page = $scope.page_to_go
@@ -232,12 +229,27 @@ define_controller = ()->
 			# search
 			results = records
 			if $scope.keyword
-				results = $filter('filter')(records, $scope.keyword)
+				fields = $scope.generated_models[$scope.selected_model]
+				expected = $scope.keyword
+				results = records.filter (actual) -> 
+					for field_info in fields
+						field_value = actual[field_info.name]
+						if field_value is null or typeof field_value is 'undefined'
+							continue
+						else 
+							idx = (""+field_value).toLowerCase().indexOf(expected.toLowerCase())
+							if idx is -1 
+								continue
+							else
+								return true
+					return false
+					
 			# order
 			if $scope.field_to_order
 				results = $filter('orderBy')(results, $scope.field_to_order, $scope.order)
 			# paginate
-			$scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length/+($scope.page_size))
+			$scope.total_page = Math.ceil(results.length/+($scope.page_size))
+			$scope.total_page = 1 if $scope.total_page is 0
 			$scope.current_page = $scope.total_page if $scope.current_page>$scope.total_page
 			$scope.current_page = 1 if $scope.current_page<1
 			start = ($scope.current_page-1)*(+$scope.page_size)
