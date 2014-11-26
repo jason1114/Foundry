@@ -99,7 +99,7 @@
 						</form>
 						<form ng-submit="go_page()" style="display:inline;">
 							<span style="position: absolute; right:12em;">
-								<input ng-model="$parent.$parent.$parent.page_to_go" type="number" min="1" class="input-mini">
+								<input ng-model="$parent.$parent.$parent.page_to_go" type="number" min="1" max="{{total_page}}"class="input-mini">
 								<button class="btn">Go</button>
 								<span style="margin-left:1em;">{{current_page}}/{{total_page}}</span>
 							</span>
