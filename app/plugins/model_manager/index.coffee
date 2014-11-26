@@ -23,7 +23,7 @@ define('model_manager', ()->
 )
 
 define_controller = ()->	    
-	angular.module('foundry').controller('ModelController', ['$scope', '$foundry', ($scope, $foundry)->
+	angular.module('foundry').controller('ModelController', ['$scope', '$foundry', '$filter', ($scope, $foundry, $filter)->
 		# only for debug
 		window.scope = $scope
 
@@ -164,7 +164,7 @@ define_controller = ()->
 					data[field_info.name] = current_data[field_info.name]
 			$scope.user_models[$scope.selected_model].create(data)
 			$scope.load()
-			$scope.recalculate_total()
+			# $scope.recalculate_total()
 		$scope.del = (record, $index) ->
 			swal {   
 				title: "Are you sure?",   
@@ -181,7 +181,7 @@ define_controller = ()->
 					record.destroy()
 					$scope.user_records[$scope.selected_model].splice($index, 1)
 					$scope.$safeApply()
-					$scope.recalculate_total()
+					# $scope.recalculate_total()
 					swal("Deleted!", "The record has been deleted.", "success")
 				else
 					swal("Cancelled", "Your data is safe :)", "error")
@@ -198,7 +198,15 @@ define_controller = ()->
 							current_data[field_info.name] = field_info.setting.off_value
 					else 
 						current_data[field_info.name] = field_info.setting.default_value
-
+		# for order
+		$scope.field_to_order = undefined
+		$scope.order = undefined
+		# for search
+		$scope.keyword = undefined
+		$scope.search = () ->
+			if $scope.keyword_to_search
+				$scope.keyword = $scope.keyword_to_search
+				$scope.current_page = 1
 		# for pagination
 		$scope.page_size = 10
 		$scope.reset_pagination = () ->
@@ -221,9 +229,20 @@ define_controller = ()->
 		$scope.change_page_size = () ->
 			$scope.reset_pagination()
 		$scope.paginate = (records) ->
+			# search
+			results = records
+			if $scope.keyword
+				results = $filter('filter')(records, $scope.keyword)
+			# order
+			if $scope.field_to_order
+				results = $filter('orderBy')(results, $scope.field_to_order, $scope.order)
+			# paginate
+			$scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length/+($scope.page_size))
+			$scope.current_page = $scope.total_page if $scope.current_page>$scope.total_page
+			$scope.current_page = 1 if $scope.current_page<1
 			start = ($scope.current_page-1)*(+$scope.page_size)
 			end = start + (+$scope.page_size)
-			records.slice(start, end)
+			results.slice(start, end)
 		$scope.load = () ->
 			$scope.generated_models = {}
 			for name, model of supported_field_models

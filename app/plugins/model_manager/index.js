@@ -38,7 +38,7 @@
 
   define_controller = function() {
     return angular.module('foundry').controller('ModelController', [
-      '$scope', '$foundry', function($scope, $foundry) {
+      '$scope', '$foundry', '$filter', function($scope, $foundry, $filter) {
         var field_name, file_module, name, position, save_recent_tabs, supported_field_models, _i, _len, _ref, _ref1;
         window.scope = $scope;
         $scope.make_range = function(start, end, step) {
@@ -203,8 +203,7 @@
             }
           }
           $scope.user_models[$scope.selected_model].create(data);
-          $scope.load();
-          return $scope.recalculate_total();
+          return $scope.load();
         };
         $scope.del = function(record, $index) {
           return swal({
@@ -222,7 +221,6 @@
               record.destroy();
               $scope.user_records[$scope.selected_model].splice($index, 1);
               $scope.$safeApply();
-              $scope.recalculate_total();
               return swal("Deleted!", "The record has been deleted.", "success");
             } else {
               return swal("Cancelled", "Your data is safe :)", "error");
@@ -252,6 +250,15 @@
             }
           }
           return _results;
+        };
+        $scope.field_to_order = void 0;
+        $scope.order = void 0;
+        $scope.keyword = void 0;
+        $scope.search = function() {
+          if ($scope.keyword_to_search) {
+            $scope.keyword = $scope.keyword_to_search;
+            return $scope.current_page = 1;
+          }
         };
         $scope.page_size = 10;
         $scope.reset_pagination = function() {
@@ -290,10 +297,24 @@
           return $scope.reset_pagination();
         };
         $scope.paginate = function(records) {
-          var end, start;
+          var end, results, start;
+          results = records;
+          if ($scope.keyword) {
+            results = $filter('filter')(records, $scope.keyword);
+          }
+          if ($scope.field_to_order) {
+            results = $filter('orderBy')(results, $scope.field_to_order, $scope.order);
+          }
+          $scope.total_page = Math.ceil($scope.user_records[$scope.selected_model].length / +$scope.page_size);
+          if ($scope.current_page > $scope.total_page) {
+            $scope.current_page = $scope.total_page;
+          }
+          if ($scope.current_page < 1) {
+            $scope.current_page = 1;
+          }
           start = ($scope.current_page - 1) * (+$scope.page_size);
           end = start + (+$scope.page_size);
-          return records.slice(start, end);
+          return results.slice(start, end);
         };
         $scope.load = function() {
           var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
