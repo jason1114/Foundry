@@ -147,7 +147,7 @@ define_controller = ()->
 				$scope.cancel_rename(field_info)
 			
 		$scope.add_model = () ->
-			for name, model of foundry._models
+			for name, fields of $scope.generated_models
 				if name is $scope.new_model_name
 					sweetAlert("Oops...", "Model #{$scope.new_model_name} already exists.", "error");
 					return
@@ -246,7 +246,23 @@ define_controller = ()->
 				attrs = model_info_list.map (model_info) -> model_info.name
 				foundry.model name, attrs, (loaded_model) ->
 					$scope.user_models[name] = loaded_model
+			
+			generated_model_names = Object.keys($scope.generated_models)
+
+			# update tabs			
+			$scope.tabs = $scope.tabs.filter (tab) ->
+				if generated_model_names.indexOf(tab) isnt -1
+					return true
+				else 
+					return false
+			save_recent_tabs()
+			# update selected model
+			if generated_model_names.indexOf($scope.selected_model) is -1
+				if $scope.tabs and $scope.tabs.length>0
+					$scope.selected_model = $scope.tabs[0]
+				else
+					delete $scope.selected_model
+
 
 		$scope.load()
-
 	])

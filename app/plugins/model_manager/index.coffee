@@ -100,6 +100,10 @@ define_controller = ()->
 		supported_field_models = {}
 		for field_name in Object.keys(supported_field)
 			supported_field_models[field_name] = foundry.load_model(field_name) 
+			# add realtime support
+			supported_field_models[field_name].onUpdate () ->
+				$scope.load()
+				$scope.$safeApply()
 
 		file_module = foundry.load('document')
 
@@ -300,6 +304,21 @@ define_controller = ()->
 						if !$scope.selected_model and $scope.tabs.length>0
 							$scope.selected_model = $scope.tabs[0]
 			$scope.current[name] = {} for name in Object.keys($scope.generated_models)
+			
+			generated_model_names = Object.keys($scope.generated_models)
+			# update tabs			
+			$scope.tabs = $scope.tabs.filter (tab) ->
+				if generated_model_names.indexOf(tab) isnt -1
+					return true
+				else 
+					return false
+			save_recent_tabs()
+			# update selected model
+			if generated_model_names.indexOf($scope.selected_model) is -1
+				if $scope.tabs and $scope.tabs.length>0
+					$scope.selected_model = $scope.tabs[0]
+				else
+					delete $scope.selected_model
 		$scope.load()
 		$scope.reset_pagination()
 	])

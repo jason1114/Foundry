@@ -137,6 +137,10 @@
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           field_name = _ref1[_i];
           supported_field_models[field_name] = foundry.load_model(field_name);
+          supported_field_models[field_name].onUpdate(function() {
+            $scope.load();
+            return $scope.$safeApply();
+          });
         }
         file_module = foundry.load('document');
         $scope.model_to_edit = {};
@@ -343,7 +347,7 @@
           return results.slice(start, end);
         };
         $scope.load = function() {
-          var attrs, field, field_info, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4, _results;
+          var attrs, field, field_info, generated_model_names, model, model_info_list, user_models_num, _j, _k, _len1, _len2, _ref2, _ref3, _ref4;
           $scope.generated_models = {};
           for (name in supported_field_models) {
             model = supported_field_models[name];
@@ -385,12 +389,26 @@
             });
           }
           _ref4 = Object.keys($scope.generated_models);
-          _results = [];
           for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
             name = _ref4[_k];
-            _results.push($scope.current[name] = {});
+            $scope.current[name] = {};
           }
-          return _results;
+          generated_model_names = Object.keys($scope.generated_models);
+          $scope.tabs = $scope.tabs.filter(function(tab) {
+            if (generated_model_names.indexOf(tab) !== -1) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          save_recent_tabs();
+          if (generated_model_names.indexOf($scope.selected_model) === -1) {
+            if ($scope.tabs && $scope.tabs.length > 0) {
+              return $scope.selected_model = $scope.tabs[0];
+            } else {
+              return delete $scope.selected_model;
+            }
+          }
         };
         $scope.load();
         return $scope.reset_pagination();

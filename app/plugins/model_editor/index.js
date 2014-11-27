@@ -188,10 +188,10 @@
           });
         };
         $scope.add_model = function() {
-          var model, name, _ref1;
-          _ref1 = foundry._models;
+          var fields, name, _ref1;
+          _ref1 = $scope.generated_models;
           for (name in _ref1) {
-            model = _ref1[name];
+            fields = _ref1[name];
             if (name === $scope.new_model_name) {
               sweetAlert("Oops...", "Model " + $scope.new_model_name + " already exists.", "error");
               return;
@@ -293,7 +293,7 @@
           return $scope.selected_model = name;
         };
         $scope.load = function() {
-          var attrs, field, field_info, model, model_info_list, name, _j, _len1, _ref1, _ref2, _results;
+          var attrs, field, field_info, generated_model_names, model, model_info_list, name, _j, _len1, _ref1, _ref2;
           $scope.generated_models = {};
           for (name in supported_field_models) {
             model = supported_field_models[name];
@@ -313,17 +313,31 @@
           }
           $scope.user_models = {};
           _ref2 = $scope.generated_models;
-          _results = [];
           for (name in _ref2) {
             model_info_list = _ref2[name];
             attrs = model_info_list.map(function(model_info) {
               return model_info.name;
             });
-            _results.push(foundry.model(name, attrs, function(loaded_model) {
+            foundry.model(name, attrs, function(loaded_model) {
               return $scope.user_models[name] = loaded_model;
-            }));
+            });
           }
-          return _results;
+          generated_model_names = Object.keys($scope.generated_models);
+          $scope.tabs = $scope.tabs.filter(function(tab) {
+            if (generated_model_names.indexOf(tab) !== -1) {
+              return true;
+            } else {
+              return false;
+            }
+          });
+          save_recent_tabs();
+          if (generated_model_names.indexOf($scope.selected_model) === -1) {
+            if ($scope.tabs && $scope.tabs.length > 0) {
+              return $scope.selected_model = $scope.tabs[0];
+            } else {
+              return delete $scope.selected_model;
+            }
+          }
         };
         return $scope.load();
       }
