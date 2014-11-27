@@ -372,6 +372,10 @@
             });
             foundry.model(name, attrs, function(loaded_model) {
               $scope.user_models[name] = loaded_model;
+              loaded_model.onUpdate(function() {
+                $scope.load();
+                return $scope.$safeApply();
+              });
               $scope.user_records[name] = loaded_model.all();
               if (user_models_num-- === 1) {
                 if (!$scope.selected_model && $scope.tabs.length > 0) {

@@ -77,6 +77,10 @@ define_controller = ()->
 		supported_field_models = {}
 		for field_name in Object.keys(supported_field)
 			supported_field_models[field_name] = foundry.load_model(field_name) 
+			# add realtime support
+			supported_field_models[field_name].onUpdate () ->
+				$scope.load()
+				$scope.$safeApply()
 
 		$scope.push_field_to_model = (type) ->
 			target = if $scope.selected_model then $scope.generated_models[$scope.selected_model] else $scope.fields_in_new_model

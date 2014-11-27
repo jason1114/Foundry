@@ -106,6 +106,10 @@
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           field_name = _ref[_i];
           supported_field_models[field_name] = foundry.load_model(field_name);
+          supported_field_models[field_name].onUpdate(function() {
+            $scope.load();
+            return $scope.$safeApply();
+          });
         }
         $scope.push_field_to_model = function(type) {
           var field, field_model, field_to_create, setting, target, to_push, _j, _len1;

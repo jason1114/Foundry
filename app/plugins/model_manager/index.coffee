@@ -290,6 +290,10 @@ define_controller = ()->
 				attrs = model_info_list.map (model_info) -> model_info.name
 				foundry.model name, attrs, (loaded_model) ->
 					$scope.user_models[name] = loaded_model
+					# add realtime support
+					loaded_model.onUpdate () ->
+						$scope.load()
+						$scope.$safeApply()
 					$scope.user_records[name] = loaded_model.all()
 					if user_models_num-- is 1
 						# all user models are created
