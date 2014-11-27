@@ -1,3 +1,17 @@
+.thumb {
+    background-color: #CCC;
+    background-image: url('http://www.google.com/images/logos/ps_logo2.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 0;
+    margin: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-size: cover;
+    -moz-round-size: cover;
+    -moz-background-size: cover;
+}
 .breadcrumb {
     font-family: cursive;
 }

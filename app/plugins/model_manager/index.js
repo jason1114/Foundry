@@ -73,6 +73,15 @@
             return true;
           }
         };
+        $scope.str_shorten = function(s, length) {
+          if (typeof s === 'string') {
+            if (s.length > length) {
+              return "" + (s.substr(0, 10)) + "..." + (s.substr(-10, 10));
+            } else {
+              return s;
+            }
+          }
+        };
         $scope.choose_a_model = "--Choose a model--";
         $scope.tab_to_add = $scope.choose_a_model;
         if (window.localStorage && window.localStorage.recent_tabs) {
