@@ -12,6 +12,30 @@
     -moz-round-size: cover;
     -moz-background-size: cover;
 }
+#show-eidit-form-switch {
+    display: block;
+    height: 1.5em;
+    background-color: #E4E4E4;
+    text-align: center;
+}
+#show-edit-form ~ #show-eidit-form-switch:before {
+  content: 'Add instance';
+  font-size: 5px;
+}
+#show-edit-form + form {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s, padding 0.5s, margin 0.5s;
+  margin-top: 5px;
+}
+#show-edit-form:checked ~ #show-eidit-form-switch:before {
+  content: '^'
+}
+#show-edit-form:checked + form {
+  max-height: 1000px;
+  padding-top: 2em;
+  border: 1px solid #E4E4E4;
+}
 .breadcrumb {
     font-family: cursive;
 }
