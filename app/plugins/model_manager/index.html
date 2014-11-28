@@ -62,10 +62,10 @@
 							    	<input type="hidden" id="image" ng-model="current[selected_model][field_info.name]" ng-required="field_info.setting.required">
 							    </div>
 							</div>
-							<div class="user_listing" ng-if="current[selected_model][field_info.name+'_uploaded_']"> 
+							<div class="user_listing" style="text-align:left;" ng-if="current[selected_model][field_info.name+'_uploaded_']"> 
 								<i class="file_thumb" style="background-image:url({{current[selected_model][field_info.name+'_uploaded_'].thumb}});"></i> 
 								<a href="{{current[selected_model][field_info.name+'_uploaded_'].link}}">
-									<span class="name">{{current[selected_model][field_info.name+'_uploaded_'].name}}</span>
+									<span class="name">{{str_shorten(current[selected_model][field_info.name+'_uploaded_'].name, 30)}}</span>
 								</a> 
 							</div>
 						</div>
@@ -190,10 +190,10 @@
 										    			</span>
 												    	<a class="btn btn-success" ng-show="model_to_edit[record.id][field_info.name+'_choosed_file_']" ng-click="upload(field_info.name, record.id)">Upload</a>
 												    	<input type="hidden" id="image" ng-model="model_to_edit[record.id][field_info.name]" ng-required="field_info.setting.required">
-												    	<div class="user_listing" ng-if="model_to_edit[record.id][field_info.name+'_uploaded_']"> 
+												    	<div class="user_listing" style="text-align: left" ng-if="model_to_edit[record.id][field_info.name+'_uploaded_']"> 
 															<i class="file_thumb" style="background-image:url({{model_to_edit[record.id][field_info.name+'_uploaded_'].thumb}});"></i> 
 															<a href="{{model_to_edit[record.id][field_info.name+'_uploaded_'].link}}">
-																<span class="name">{{model_to_edit[record.id][field_info.name+'_uploaded_'].name}}</span>
+																<span class="name">{{str_shorten(model_to_edit[record.id][field_info.name+'_uploaded_'].name, 30)}}</span>
 															</a> 
 														</div>
 												    </div>
@@ -204,7 +204,7 @@
 					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)!=-1">
 							    				<div ng-if="field_info.type=='_field_text_area'">
 							    					<label>{{field_info.name}}</label>
-							    					<textarea ng-hide="instance_in_edit[record.id]" style="width:97%;" disabled>{{record[field_info.name]}}</textarea>
+							    					<textarea ng-hide="instance_in_edit[record.id]" style="width:97%;height:200px;" disabled>{{record[field_info.name]}}</textarea>
 							    					<textarea ng-show="instance_in_edit[record.id]" style="width:97%;" ng-model="model_to_edit[record.id][field_info.name]"></textarea>
 								    			</div>
 							    			</div>
