@@ -291,6 +291,13 @@
           $scope.keyword = $scope.keyword_to_search;
           return $scope.current_page = 1;
         };
+        $scope.$watch(function(scope) {
+          return scope.keyword_to_search;
+        }, function(newValue, oldValue) {
+          if (!newValue && oldValue) {
+            return $scope.search();
+          }
+        });
         $scope.page_size = 10;
         $scope.reset_pagination = function() {
           return $scope.current_page = 1;

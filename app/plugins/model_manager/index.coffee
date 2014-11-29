@@ -235,6 +235,13 @@ define_controller = ()->
 		$scope.search = () ->
 			$scope.keyword = $scope.keyword_to_search
 			$scope.current_page = 1
+		
+		$scope.$watch( (scope) -> 
+			scope.keyword_to_search
+		, (newValue, oldValue) ->
+            if !newValue and oldValue
+            	$scope.search()
+            )
 		# for pagination
 		$scope.page_size = 10
 		$scope.reset_pagination = () ->
