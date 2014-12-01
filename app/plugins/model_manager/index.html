@@ -157,11 +157,15 @@
 								  		</label>
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_text_area'">
-					    				<span ng-hide="instance_in_edit[record.id]">{{str_shorten(record[field_info.name], 20)}}</span>
+					    				<span ng-if="str_shorten(record[field_info.name], 20)==record[field_info.name]" ng-hide="instance_in_edit[record.id]">{{str_shorten(record[field_info.name], 20)}}</span>
+					    				<a href="" ng-click="set_zoomed_text(record[field_info.name])" ng-if="str_shorten(record[field_info.name], 20)!=record[field_info.name]">{{str_shorten(record[field_info.name], 20)}}</a>
 					    				<em ng-show="instance_in_edit[record.id]">See details</em>
 					    			</div>
 					    			<div ng-if="field_info.type=='_field_image'">
-					    				<div ng-hide="instance_in_edit[record.id]" class="thumb" style="background-image: url('{{record[field_info.name]}}');"></div>
+
+					    				<div ng-hide="instance_in_edit[record.id]" ng-if="record[field_info.name]" class="thumb" style="background-image: url('{{record[field_info.name]}}');">
+					    					<b class="zoom-action-button" en-zoom="{{record[field_info.name]}}"><i class="icon icon-zoom-in"></i></b>
+					    				</div>
 					    				<em ng-show="instance_in_edit[record.id]">See details</em>
 					    			</div>
 				    			<!-- </div> -->
@@ -206,8 +210,8 @@
 					    					<div class="row" ng-repeat="field_info in fields" ng-if="hide_in_right.indexOf(field_info.type)!=-1">
 							    				<div ng-if="field_info.type=='_field_text_area'">
 							    					<label>{{field_info.name}}</label>
-							    					<textarea ng-hide="instance_in_edit[record.id]" style="width:97%;height:200px;" disabled>{{record[field_info.name]}}</textarea>
-							    					<textarea ng-show="instance_in_edit[record.id]" style="width:97%;" ng-model="model_to_edit[record.id][field_info.name]"></textarea>
+							    					<textarea ng-hide="instance_in_edit[record.id]" style="width:97%;height:200px;" readonly>{{record[field_info.name]}}</textarea>
+							    					<textarea ng-show="instance_in_edit[record.id]" style="width:97%;height:200px;" ng-model="model_to_edit[record.id][field_info.name]"></textarea>
 								    			</div>
 							    			</div>
 					    				</div>
@@ -222,5 +226,11 @@
 	</div>
 	<div ng-if="!selected_model">
 		Sorry, there have not been any models arleady.
+	</div>
+
+	<div ng-hide="!zoomed_text" class="image-zoomed todo-image-zoomed" style="display: block;">
+		<div id="floater" style="float:left; height:50%; margin-bottom:-175px;"></div>
+		<p class="" style="clear:both;position:relative;color:white;margin:0 auto;width: 500px;">{{zoomed_text}}</p>
+		<div class="backdrop" ng-click="set_zoomed_text()"></div>
 	</div>
 </div>

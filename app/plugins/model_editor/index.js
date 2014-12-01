@@ -13,7 +13,7 @@
     return user_plugin = {
       name: 'model_editor',
       anchor: '#/model_editor',
-      title: 'Configuration',
+      title: 'Model',
       type: 'plugin',
       icon: 'icon-pencil',
       init: function() {

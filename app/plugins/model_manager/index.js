@@ -13,7 +13,7 @@
     return user_plugin = {
       name: 'model_manager',
       anchor: '#/model_manager',
-      title: 'SimpleBase',
+      title: 'Data',
       type: 'plugin',
       icon: 'icon-list',
       init: function() {
@@ -81,6 +81,9 @@
               return s;
             }
           }
+        };
+        $scope.set_zoomed_text = function(text) {
+          return $scope.zoomed_text = text;
         };
         $scope.choose_a_model = "--Choose a model--";
         $scope.tab_to_add = $scope.choose_a_model;

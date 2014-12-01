@@ -1,3 +1,8 @@
+/* fix default.css*/
+.todo-image-zoomed {
+  position: fixed;
+}
+/**/
 .thumb {
     background-color: #CCC;
     background-image: url('http://www.google.com/images/logos/ps_logo2.png');
