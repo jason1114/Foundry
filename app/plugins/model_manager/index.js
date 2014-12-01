@@ -39,7 +39,7 @@
   define_controller = function() {
     return angular.module('foundry').controller('ModelController', [
       '$scope', '$foundry', '$filter', function($scope, $foundry, $filter) {
-        var field_name, file_module, name, position, save_recent_tabs, supported_field_models, _i, _len, _ref, _ref1;
+        var field_name, name, position, save_recent_tabs, supported_field_models, _i, _len, _ref, _ref1;
         window.scope = $scope;
         $scope.make_range = function(start, end, step) {
           var result, v;
@@ -154,7 +154,6 @@
             return $scope.$safeApply();
           });
         }
-        file_module = foundry.load('document');
         $scope.model_to_edit = {};
         $scope.instance_in_edit = {};
         $scope.init_edit_model = function(record) {
@@ -184,7 +183,6 @@
           });
           instance = uuid ? $scope.model_to_edit[uuid] : $scope.current[$scope.selected_model];
           Nimbus.Binary.upload_file(instance[field_name + '_choosed_file_'], function(file) {
-            file_module.set(file._file.id, file._file);
             instance[field_name + "_uploaded_"] = {
               thumb: file._file.thumbnailLink,
               name: file.name,

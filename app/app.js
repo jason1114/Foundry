@@ -36,7 +36,7 @@
     config.plugins = {
       user: 'core/plugins/user',
       workspace: 'core/plugins/workspace',
-      document: 'core/plugins/document',
+      //document: 'core/plugins/document',
       model_editor : 'app/plugins/model_editor',
       model_manager : 'app/plugins/model_manager'
     };

@@ -114,7 +114,7 @@ define_controller = ()->
 				$scope.load()
 				$scope.$safeApply()
 
-		file_module = foundry.load('document')
+		# file_module = foundry.load('document')
 
 		# for edit model instance
 		$scope.model_to_edit = {}
@@ -144,7 +144,7 @@ define_controller = ()->
 			instance = if uuid then $scope.model_to_edit[uuid] else $scope.current[$scope.selected_model]
 			Nimbus.Binary.upload_file(instance[field_name+'_choosed_file_'], (file)->
 				# push this into documents
-				file_module.set(file._file.id, file._file)
+				# file_module.set(file._file.id, file._file)
 
 				instance[field_name+"_uploaded_"] = {
 					thumb: file._file.thumbnailLink
